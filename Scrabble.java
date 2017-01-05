@@ -6,6 +6,8 @@ public class Scrabble {
     private int letterCount;
     private int wordCount;
     private boolean start;
+    private String[]origWords;
+   
     
     public Scrabble(){
 	grid = new String[15][15];
@@ -14,14 +16,30 @@ public class Scrabble {
 	start = true;
     }
 
-    public void firstLetter(String letter){
-	grid[8][8] = letter;
-    }
-
     public void addLetter(String letter, int row, int col){
 	grid[row][col] = letter;
     }
 
+    
+
+
+    public static boolean checkWord(String word){
+	try{
+	    Scanner dict = new Scanner(new File("dictionary.txt"));
+	    while(dict.hasNext()) {
+		if((dict.next()).equals(word)){
+		    return true;
+		}
+	    }
+	}
+        catch(FileNotFoundException e){
+	    System.out.println("File not found.");
+	    System.exit(1);
+	}
+
+	return false;
+	
+    }
 
     public String toString() {
 	String str = "[";
@@ -49,6 +67,7 @@ public class Scrabble {
 	Scrabble a = new Scrabble();
 	a.addLetter("H", 10, 10);
 	System.out.println(a.toString());
+	System.out.println(checkWord("sghheu"));
     }
 
 }
