@@ -24,7 +24,7 @@ import java.awt.dnd.DropTargetListener;
 import java.io.IOException;
 import javax.swing.*;
 
-public class ya{
+public class dnd{
 
 
     // Make a Label draggable; You can use the example to make any component draggable
