@@ -40,7 +40,7 @@ public class Scrabble {
 	}
 	
 	for(String word: hor.split("\\.")){
-	    if(word.length() > 0){
+	    if(word.length() > 1){
 	    Words.add(word);
 	    }
 	}
@@ -48,12 +48,31 @@ public class Scrabble {
     
 	
     public void verWords(){
+	String ver = "";
+	
+	for(int col = 0; col < 15; col++){
+	    for(int row = 0; row < 15; row++){
+		ver += grid[row][col];
+	    }
+	}
+	
+	for(String word: ver.split("\\.")){
+	    if(word.length() > 1){
+		Words.add(word);
+	    }
+	}
+    }
+    
+
+    public boolean checkAllWords(){
+	for(int i = 0; i < Words.size(); i++){
+	    if(checkWord(Words.get(i)) == false){
+		return false;
+	    }
+	}
+	return true;
     }
 
-    /*
-    public boolean checkAllWords(){
-    }
-    */
     
     public static boolean checkWord(String word){
 	try{
@@ -105,9 +124,13 @@ public class Scrabble {
 	a.addLetter("E", 10, 11);
 	a.addLetter("D", 11, 8);
 	a.addLetter("O", 11, 9);
+	a.addLetter("O", 12, 8);
+	a.addLetter("I", 13, 8);
 	System.out.println(a.toString());
 	a.horWords();
+	a.verWords();
         System.out.println(a.getWords());
+	System.out.println(a.checkAllWords());
 	//	System.out.println(checkWord("sghheu"));
 
     }
