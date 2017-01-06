@@ -6,23 +6,55 @@ public class Scrabble {
     private int letterCount;
     private int wordCount;
     private boolean start;
-    private String[]origWords;
+    private ArrayList<String> Words;
    
     
     public Scrabble(){
 	grid = new String[15][15];
+	clear();
 	letterCount = 0;
 	wordCount = 0;
 	start = true;
+	Words = new ArrayList<String>();
     }
 
+    public void clear(){
+	for(int row = 0; row < 15; row++){
+	    for(int col = 0; col < 15; col++){
+		grid[row][col] = ".";
+	    }
+	}
+    }
+    
     public void addLetter(String letter, int row, int col){
 	grid[row][col] = letter;
     }
 
+    public void horWords(){
+	String hor = "";
+	
+	for(int row = 0; row < 15; row++){
+	    for(int col = 0; col < 15; col++){
+		hor += grid[row][col];
+	    }
+	}
+	
+	for(String word: hor.split("\\.")){
+	    if(word.length() > 0){
+	    Words.add(word);
+	    }
+	}
+    }
     
+	
+    public void verWords(){
+    }
 
-
+    /*
+    public boolean checkAllWords(){
+    }
+    */
+    
     public static boolean checkWord(String word){
 	try{
 	    Scanner dict = new Scanner(new File("dictionary.txt"));
@@ -48,7 +80,7 @@ public class Scrabble {
 	    
 	    for (int j = 0; j < grid[i].length; j++) {
 		str += grid[i][j];
-		str += " ";
+		str += "| ";
 	    }
 	    
 	    str += "]";
@@ -62,12 +94,22 @@ public class Scrabble {
 	return str;
     }
 
+    public String getWords(){
+	return (Words.toString());
+    }
 
     public static void main(String[] args){
+	
 	Scrabble a = new Scrabble();
 	a.addLetter("H", 10, 10);
+	a.addLetter("E", 10, 11);
+	a.addLetter("D", 11, 8);
+	a.addLetter("O", 11, 9);
 	System.out.println(a.toString());
-	System.out.println(checkWord("sghheu"));
+	a.horWords();
+        System.out.println(a.getWords());
+	//	System.out.println(checkWord("sghheu"));
+
     }
 
 }
