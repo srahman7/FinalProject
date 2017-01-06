@@ -10,10 +10,12 @@ public class Scrabble {
     private int wordCount;
     private boolean start;
     private ArrayList<String> Words;
+    private ArrayList<String> WordsAdded;
     private Container pane;
     private JButton submit;
-    private String[] letterRack;
-    private int score;
+    private String[] letterList;
+    private int score1;
+    private int score2;
     
    
     
@@ -60,7 +62,7 @@ public class Scrabble {
 	}
     }
     
-	
+ 
     public void verWords(){
 	String ver = "";
 	
@@ -76,10 +78,52 @@ public class Scrabble {
 	    }
 	}
     }
+    public void horWordsAdded(){
+	String hor = "";
+	
+	for(int row = 0; row < 15; row++){
+	    for(int col = 0; col < 15; col++){
+		hor += grid[row][col];
+	    }
+	}
+	
+	for(String word: hor.split("\\.")){
+	    if(word.length() > 1){
+	    WordsAdded.add(word);
+	    }
+	}
+    }
     
+ 
+    public void verWordsAdded(){
+	String ver = "";
+	
+	for(int col = 0; col < 15; col++){
+	    for(int row = 0; row < 15; row++){
+		ver += grid[row][col];
+	    }
+	}
+	
+	int id = 0;
+	for(String word: ver.split("\\.")){
+	    if(word.length() > 1){
+		WordsAdded.add(word + id);
+	    }
+	    id++;
+	}
+    }
 
-    public boolean checkAllWords(){
-	for(int i = 0; i < Words.size(); i++){
+    public String wordAdded(){
+	for (int x = 0; x < WordsAdded.size(); x++){
+	    for (int i=0; i <Words.size(); i++){
+		if (WordsAdded.get(x).equals(Words.get(i))
+					     }
+		    }
+	
+	    }
+
+	    public boolean checkAllWords(){
+		for(int i = 0; i < Words.size(); i++){
 	    if(checkWord(Words.get(i)) == false){
 		return false;
 	    }
@@ -106,7 +150,7 @@ public class Scrabble {
 	
     }
 
-    public int addScore(String word){
+    public static int addScore(String word, int score){
 	for (int x =0; x+1 <= word.length();x++){
 	    if ( (word.substring(x,x+1)).equals("A") || (word.substring(x,x+1)).equals("E") || (word.substring(x,x+1)).equals("I") || (word.substring(x,x+1)).equals("O") || (word.substring(x,x+1)).equals("U") || (word.substring(x,x+1)).equals("L") || (word.substring(x,x+1)).equals("N") || (word.substring(x,x+1)).equals("R") || (word.substring(x,x+1)).equals("S") || (word.substring(x,x+1)).equals("T") ){
 		score++;
