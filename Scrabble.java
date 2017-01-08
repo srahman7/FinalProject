@@ -13,7 +13,7 @@ public class Scrabble {
     private  ArrayList<String> WordsAdded;
     private Container pane;
     private JButton submit;
-    private String[] letterList;
+    private String[] letterBag;
     private int score1;
     private int score2;
     
@@ -39,7 +39,7 @@ public class Scrabble {
     public void clear(){
 	for(int row = 0; row < 15; row++){
 	    for(int col = 0; col < 15; col++){
-		grid[row][col] = ".";
+		grid[row][col] = "_";
 	    }
 	}
     }
@@ -58,17 +58,18 @@ public class Scrabble {
 
     public void horWords(){
 	String hor = "";
-	int id=0;
 	
 	for(int row = 0; row < 15; row++){
 	    for(int col = 0; col < 15; col++){
 		hor += grid[row][col];
 	    }
 	}
+
+	int id = 0;
 	
-	for(String word: hor.split("\\.")){
+	for(String word: hor.split("\\_")){
 	    if(word.length() > 1){
-	    Words.add(word+id);
+	    Words.add(word + id);
 	    id++;
 	    }
 	}
@@ -77,23 +78,24 @@ public class Scrabble {
  
     public void verWords(){
 	String ver = "";
-	int id=0;
+	
 	for(int col = 0; col < 15; col++){
 	    for(int row = 0; row < 15; row++){
 		ver += grid[row][col];
 	    }
 	}
+
+	char id = 'a';
 	
-	for(String word: ver.split("\\.")){
+	for(String word: ver.split("\\_")){
 	    if(word.length() > 1){
-		Words.add(word+id);
+		Words.add(word + id);
 		id++;
 	    }
 	}
     }
     public void horWordsAdded(){
-	
-	int id=0;
+
 	String hor = "";
 	
 	for(int row = 0; row < 15; row++){
@@ -101,8 +103,10 @@ public class Scrabble {
 		hor += grid[row][col];
 	    }
 	}
+
+	int id = 0;
 	
-	for(String word: hor.split("\\.")){
+	for(String word: hor.split("\\_")){
 	    if(word.length() > 1){
 	    WordsAdded.add(word+id);
 	    id++;
@@ -119,13 +123,14 @@ public class Scrabble {
 		ver += grid[row][col];
 	    }
 	}
+
+	char id = 'a';
 	
-	int id = 0;
-	for(String word: ver.split("\\.")){
+	for(String word: ver.split("\\_")){
 	    if(word.length() > 1){
 		WordsAdded.add(word + id);
+		id++;
 	    }
-	    id++;
 	}
     }
 
@@ -165,6 +170,7 @@ public class Scrabble {
 
     
     public static boolean checkWord(String word){
+	word = word.substring(0,(word.length() - 1));
 	try{
 	    Scanner dict = new Scanner(new File("dictionary.txt"));
 	    while(dict.hasNext()) {
@@ -275,54 +281,46 @@ public class Scrabble {
    
     public String getWordsAdded(){
 	return (WordsAdded.toString());
-    } 
+    }
 
+    public void endTurn(){
+	if(checkAllWords()){
+	    startNewTurn(); 
+	}
+	else{System.out.println("error " + Words);}
+    }
+	     
+    public void startNewTurn(){
+	horWordsAdded();
+	verWordsAdded();
+	System.out.println(getWordsAdded());
+	System.out.println(wordAdded());
+	Words.add(wordAdded());
+	clearWordsAdded();
+	clearWords();
+	horWords();
+	verWords();
+    }
+
+    
     public static void main(String[] args){
 	
 	Scrabble a = new Scrabble();
-	a.addLetter("H", 10, 10);
-	a.addLetter("E", 10, 11);
-	a.horWords();
-	a.verWords();
-        System.out.println(a.getWords());
-	//a.clear();
-	a.addLetter("D", 11, 8);
-	a.addLetter("O", 11, 9);
-	a.horWordsAdded();
-	a.verWordsAdded();
-
-	System.out.println(a.getWordsAdded());
-	System.out.println(a.wordAdded());
-	// System.out.println(a.getWords());
-
-	
-	a.clearWords();
-
-	a.horWords();
-	a.verWords();
-        System.out.println(a.getWords());
-	
-	a.addLetter("O", 12, 8);
-	a.addLetter("T", 13, 8);
-
-
-	a.clearWordsAdded();
-	a.horWordsAdded();
-	a.verWordsAdded();
-
-	System.out.println(a.getWordsAdded());
-	System.out.println(a.wordAdded());
-	
+	a.addLetter("D", 8, 8);
+	a.addLetter("O", 8, 9);
+	a.addLetter("G", 8, 10);
 	System.out.println(a.toString());
-
-	
-
-
-	System.out.println(a.addScore1("DOG"));
-	System.out.println(a.checkAllWords());
-	
-	//	System.out.println(checkWord("sghheu"));
-
+	a.endTurn();
+	a.addLetter("E", 9, 8);
+	a.addLetter("A", 10, 8);
+	a.addLetter("R", 11, 8);
+	System.out.println(a.toString());
+	a.endTurn();
+	a.addLetter("E", 11, 9);
+	a.addLetter("A", 11, 10);
+	a.addLetter("D", 11, 11);
+	System.out.println(a.toString());
+	a.endTurn();
     }
 
 }
