@@ -16,6 +16,8 @@ public class Scrabble {
     private String[] letterBag;
     private int score1;
     private int score2;
+    private int turnNumber;
+    private int playerNumber;
     
    
     
@@ -29,6 +31,8 @@ public class Scrabble {
 	WordsAdded= new ArrayList<String>();
 	score1=0;
 	score2=0;
+	turnNumber = 1;
+	playerNumber = 1;
 	//submit.addActionListener(this);
 	//submit.setActionCommand(subWord();
 	
@@ -159,9 +163,9 @@ public class Scrabble {
 	return WordsAdded.get(WordsAdded.size()-1);
     }
 
-    public boolean checkAllWords(){
-	for(int i = 0; i < Words.size(); i++){
-	    if(checkWord(Words.get(i)) == false){
+    public boolean checkAllWordsAdded(){
+	for(int i = 0; i < WordsAdded.size(); i++){
+	    if(checkWord(WordsAdded.get(i)) == false){
 		return false;
 	    }
 	}
@@ -253,6 +257,40 @@ public class Scrabble {
 	
     }
 
+     public int genScore(String word){
+	 int score = 0;
+	for (int x =0; x+1 <= word.length();x++){
+	    if ( (word.substring(x,x+1)).equals("A") || (word.substring(x,x+1)).equals("E") || (word.substring(x,x+1)).equals("I") || (word.substring(x,x+1)).equals("O") || (word.substring(x,x+1)).equals("U") || (word.substring(x,x+1)).equals("L") || (word.substring(x,x+1)).equals("N") || (word.substring(x,x+1)).equals("R") || (word.substring(x,x+1)).equals("S") || (word.substring(x,x+1)).equals("T") ){
+		score++;
+	    }
+	    if ( (word.substring(x,x+1)).equals("D") || (word.substring(x,x+1)).equals("G") ){
+		score+=2;
+	    }
+	    if ( (word.substring(x,x+1)).equals("B") || (word.substring(x,x+1)).equals("C") || (word.substring(x,x+1)).equals("M") || (word.substring(x,x+1)).equals("P")  ){
+		score+=3;
+	    }
+	    if ( (word.substring(x,x+1)).equals("F") || (word.substring(x,x+1)).equals("H") || (word.substring(x,x+1)).equals("W") || (word.substring(x,x+1)).equals("Y") || (word.substring(x,x+1)).equals("V") ){
+		score+=4;
+	    }
+	    if ( (word.substring(x,x+1)).equals("K") ){
+		score+=5;
+	    }
+	    if ( (word.substring(x,x+1)).equals("J") || (word.substring(x,x+1)).equals("X") ){
+		score+=8;
+	    }
+	    if ( (word.substring(x,x+1)).equals("Q") || (word.substring(x,x+1)).equals("Z") ){
+		score+=10;
+	    }
+	    else {
+		score+=0;
+	    }
+	}
+	return score;
+	
+		
+	
+    }
+
     public String toString() {
 	String str = "[";
 	
@@ -284,42 +322,60 @@ public class Scrabble {
     }
 
     public void endTurn(){
-	if(checkAllWords()){
+	horWordsAdded();
+	verWordsAdded();
+	if(checkAllWordsAdded()){
+
+	    if(playerNumber == 1){
+		addScore1(wordAdded());
+	    }
+	    else{addScore2(wordAdded());}
+
+	    
 	    startNewTurn(); 
 	}
-	else{System.out.println("error " + Words);}
+	else{WordsAdded.remove(WordsAdded.size() - 1);
+	    System.out.println("");
+	    System.out.println("The word you have submitted is not valid.");}
     }
 	     
     public void startNewTurn(){
-	horWordsAdded();
-	verWordsAdded();
-	System.out.println(getWordsAdded());
-	System.out.println(wordAdded());
+	if(turnNumber % 2 == 1){
+	    playerNumber = 2;}
+	else{playerNumber = 1;}
+
+	turnNumber++;
+		
+	System.out.print("\033[2J");
+	System.out.println(toString());
+	System.out.println( "Current Player: " + playerNumber);
+	System.out.println("");
+	System.out.println("Previous Word:");
+	System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+	System.out.println(" " + genScore(wordAdded()));
 	Words.add(wordAdded());
 	clearWordsAdded();
 	clearWords();
 	horWords();
 	verWords();
+	
     }
 
     
     public static void main(String[] args){
 	
 	Scrabble a = new Scrabble();
+	System.out.println(a.toString());
+	System.out.println( "Current Player: " + a.playerNumber);
 	a.addLetter("D", 8, 8);
 	a.addLetter("O", 8, 9);
 	a.addLetter("G", 8, 10);
-	System.out.println(a.toString());
 	a.endTurn();
-	a.addLetter("E", 9, 8);
-	a.addLetter("A", 10, 8);
-	a.addLetter("R", 11, 8);
-	System.out.println(a.toString());
+	a.addLetter("A", 9, 8);
+	a.addLetter("Y", 10, 8);
 	a.endTurn();
-	a.addLetter("E", 11, 9);
-	a.addLetter("A", 11, 10);
-	a.addLetter("D", 11, 11);
-	System.out.println(a.toString());
+	a.addLetter("Q", 10, 6);
+	a.addLetter("O", 10, 7);
 	a.endTurn();
     }
 
