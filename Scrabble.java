@@ -6,33 +6,36 @@ import java.awt.event.*;
 
 public class Scrabble {
     private String[][]grid;
-    private int letterCount;
-    private int wordCount;
     private boolean start;
-    private  ArrayList<String> Words;
-    private  ArrayList<String> WordsAdded;
+    private ArrayList<String> Words;
+    private ArrayList<String> WordsAdded;
     private Container pane;
     private JButton submit;
-    private String[] letterBag;
+    private ArrayList<String> LetterBag;
+    private ArrayList<String> player1Letters;
+    private ArrayList<String> player2Letters;
     private int score1;
     private int score2;
     private int turnNumber;
     private int playerNumber;
+    private Random randgen;
     
    
     
     public Scrabble(){
 	grid = new String[15][15];
 	clear();
-	letterCount = 0;
-	wordCount = 0;
 	start = true;
 	Words = new ArrayList<String>();
 	WordsAdded= new ArrayList<String>();
+	LetterBag= new ArrayList<String>();
+	player1Letters= new ArrayList<String>();
+	player2Letters= new ArrayList<String>();
 	score1=0;
 	score2=0;
 	turnNumber = 1;
 	playerNumber = 1;
+	randgen = new Random();
 	//submit.addActionListener(this);
 	//submit.setActionCommand(subWord();
 	
@@ -40,6 +43,39 @@ public class Scrabble {
 	
     }
 
+    public void loadLetters(){
+	try{
+	    Scanner bag = new Scanner(new File("LetterBag.txt"));
+
+	    while (bag.hasNext()) {
+		LetterBag.add(bag.next());
+	    }
+	}
+	catch(FileNotFoundException e){
+	    System.out.println("LetterBag file not found.");
+	    System.exit(1);
+	}
+    }
+
+    public void distributeLetters1(){  
+	while(player1Letters.size() < 10){
+	    int letterIndex = randgen.nextInt(LetterBag.size());
+	    player1Letters.add(LetterBag.get(letterIndex));
+	    LetterBag.remove(letterIndex);
+	}
+	System.out.println(player1Letters.toString());    	    
+    }
+
+    public void distributeLetters2(){
+	int letterIndex = randgen.nextInt(LetterBag.size());
+	while(player2Letters.size() < 10){
+	    player2Letters.add(LetterBag.get(letterIndex));
+	    LetterBag.remove(letterIndex);
+	}
+	System.out.println(player2Letters.toString());    
+    }
+
+  
     public void clear(){
 	for(int row = 0; row < 15; row++){
 	    for(int col = 0; col < 15; col++){
@@ -292,7 +328,8 @@ public class Scrabble {
     }
 
     public String toString() {
-	String str = "[";
+	System.out.println("   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15");
+	String str = "1 [";
 	
 	for (int i = 0; i < grid.length; i++) {
 	    
@@ -301,11 +338,17 @@ public class Scrabble {
 		str += "| ";
 	    }
 	    
-	    str += "]";
+	    str += "\b" + "\b" + "]";
 	    str += "\n";
 
 	    if (i < grid.length - 1) {
-	    str += "[";
+
+		if(i < 8){
+	      	str += (i + 2) + " [";
+		}
+		else{
+		    str += (i + 2) + "[";
+		}
 	    }
 	}
 
@@ -350,6 +393,14 @@ public class Scrabble {
 	System.out.println(toString());
 	System.out.println( "Current Player: " + playerNumber);
 	System.out.println("");
+	System.out.println("Player 1 Score: " + score1);
+	System.out.println("Player 2 Score: " +score2);
+	if(playerNumber == 1){
+	    distributeLetters1();
+	}
+	else{distributeLetters2();}
+	
+	System.out.println("");
 	System.out.println("Previous Word:");
 	System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
 	System.out.println(" " + genScore(wordAdded()));
@@ -361,22 +412,39 @@ public class Scrabble {
 	
     }
 
+    public void initializeGame(){
+	System.out.print("\033[2J");
+	System.out.println(toString());
+	System.out.println( "Current Player: " + playerNumber);
+	System.out.println("");
+	System.out.println("Player 1 Score: " + score1);
+	System.out.println("Player 2 Score: " + score2);
+	System.out.println("");
+	loadLetters();
+	distributeLetters1();
+	userInput();
+	
+    }
+
+    public void userInput(){
+
+	while(!(scan.next()).equals("submit")){
+	    String letter = scan.next();
+	    int row = scan.nextInt();
+	    int col = scan.nextInt();
+	    addLetter(letter, row, col);
+	}
+
+	endTurn();
+    }
+
+    static Scanner scan = new Scanner(System.in);
     
     public static void main(String[] args){
 	
 	Scrabble a = new Scrabble();
-	System.out.println(a.toString());
-	System.out.println( "Current Player: " + a.playerNumber);
-	a.addLetter("D", 8, 8);
-	a.addLetter("O", 8, 9);
-	a.addLetter("G", 8, 10);
-	a.endTurn();
-	a.addLetter("A", 9, 8);
-	a.addLetter("Y", 10, 8);
-	a.endTurn();
-	a.addLetter("Q", 10, 6);
-	a.addLetter("O", 10, 7);
-	a.endTurn();
+	a.initializeGame();
+
     }
 
 }
