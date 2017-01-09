@@ -19,7 +19,7 @@ public class Scrabble {
     private int turnNumber;
     private int playerNumber;
     private Random randgen;
-    
+    private String lastWord;
    
     
     public Scrabble(){
@@ -36,6 +36,7 @@ public class Scrabble {
 	turnNumber = 1;
 	playerNumber = 1;
 	randgen = new Random();
+	lastWord = " ";
 	//submit.addActionListener(this);
 	//submit.setActionCommand(subWord();
 	
@@ -93,8 +94,54 @@ public class Scrabble {
     }
     
     public void addLetter(String letter, int row, int col){
-	grid[row -  1][col - 1] = letter;
+	if (playerNumber == 1){
+	    int index = player1Letters.indexOf(letter);
+	    if(index == -1){
+		System.out.println("You do not have that letter.");
+	    }
+	    else{
+		player1Letters.remove(player1Letters.indexOf(letter)); 
+		grid[row -  1][col - 1] = letter;
+		System.out.print("\033[2J");
+		System.out.println(toString());
+		System.out.println( "Current Player: " + playerNumber);
+		System.out.println("");
+		System.out.println("Player 1 Score: " + score1);
+		System.out.println("Player 2 Score: " +score2);
+		System.out.println("");
+		System.out.println("Previous Word:");
+		System.out.print(lastWord.substring(0, lastWord.length() - 1));
+		System.out.println(" " + genScore(lastWord));
+		System.out.println("");
+		System.out.println(player1Letters.toString());
+	    }
+	}
+
+	if(playerNumber == 2){
+	    int index = player2Letters.indexOf(letter);
+	    if(index == -1){
+		System.out.println("You do not have that letter.");
+	    }
+	    else{
+		player2Letters.remove(player2Letters.indexOf(letter)); 
+		grid[row -  1][col - 1] = letter;
+		System.out.print("\033[2J");
+		System.out.println(toString());
+		System.out.println( "Current Player: " + playerNumber);
+		System.out.println("");
+		System.out.println("Player 1 Score: " + score1);
+		System.out.println("Player 2 Score: " +score2);
+		System.out.println("");
+		System.out.println("Previous Word:");
+		System.out.print(lastWord.substring(0, lastWord.length() - 1));
+		System.out.println(" " + genScore(lastWord));
+		System.out.println("");
+		System.out.println(player2Letters.toString());
+	    }
+	}
     }
+
+
 
     public void horWords(){
 	String hor = "";
@@ -192,7 +239,7 @@ public class Scrabble {
 		return WordsAdded.get(x);
 	    }
 	}
-	return "Word not added";
+	return "Word not Added ";
     }
 
     public String wordAddedXtra(){
@@ -371,6 +418,7 @@ public class Scrabble {
 
 	    if(playerNumber == 1){
 		addScore1(wordAdded());
+		lastWord = wordAdded();
 	    }
 	    else{addScore2(wordAdded());}
 
@@ -400,6 +448,7 @@ public class Scrabble {
 	System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
 	System.out.println(" " + genScore(wordAdded()));
 	System.out.println("");
+
 	if(playerNumber == 1){
 	    distributeLetters1();
 	}
