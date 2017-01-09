@@ -67,8 +67,8 @@ public class Scrabble {
     }
 
     public void distributeLetters2(){
-	int letterIndex = randgen.nextInt(LetterBag.size());
 	while(player2Letters.size() < 10){
+	    int letterIndex = randgen.nextInt(LetterBag.size());
 	    player2Letters.add(LetterBag.get(letterIndex));
 	    LetterBag.remove(letterIndex);
 	}
@@ -93,7 +93,7 @@ public class Scrabble {
     }
     
     public void addLetter(String letter, int row, int col){
-	grid[row][col] = letter;
+	grid[row -  1][col - 1] = letter;
     }
 
     public void horWords(){
@@ -395,20 +395,23 @@ public class Scrabble {
 	System.out.println("");
 	System.out.println("Player 1 Score: " + score1);
 	System.out.println("Player 2 Score: " +score2);
+	System.out.println("");
+	System.out.println("Previous Word:");
+	System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+	System.out.println(" " + genScore(wordAdded()));
+	System.out.println("");
 	if(playerNumber == 1){
 	    distributeLetters1();
 	}
 	else{distributeLetters2();}
 	
-	System.out.println("");
-	System.out.println("Previous Word:");
-	System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
-	System.out.println(" " + genScore(wordAdded()));
 	Words.add(wordAdded());
 	clearWordsAdded();
 	clearWords();
 	horWords();
 	verWords();
+	System.out.println("PLEASE ENTER A LETTER FOLLOWED BY THE X-COORDINATE AND Y-COORDINATE: FORMMATED LIKE THIS- A 1 1");
+	userInput();
 	
     }
 
@@ -422,17 +425,19 @@ public class Scrabble {
 	System.out.println("");
 	loadLetters();
 	distributeLetters1();
+	System.out.println("PLEASE ENTER A LETTER FOLLOWED BY THE X-COORDINATE AND Y-COORDINATE: FORMMATED LIKE THIS- A 1 1");
 	userInput();
 	
     }
 
     public void userInput(){
 
-	while(!(scan.next()).equals("submit")){
+	while(scan.hasNext()){
 	    String letter = scan.next();
-	    int row = scan.nextInt();
-	    int col = scan.nextInt();
-	    addLetter(letter, row, col);
+	    if (letter.equals("submit")){ break;}
+ 	    int row = Integer.parseInt(scan.next());
+	    int col = Integer.parseInt(scan.next());
+	    addLetter(letter, col, row);
 	}
 
 	endTurn();
