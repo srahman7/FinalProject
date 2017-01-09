@@ -239,7 +239,7 @@ public class Scrabble {
 		return WordsAdded.get(x);
 	    }
 	}
-	return "Word not Added ";
+	return "word not added ";
     }
 
     public String wordAddedXtra(){
