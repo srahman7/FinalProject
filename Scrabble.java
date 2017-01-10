@@ -10,6 +10,7 @@ public class Scrabble {
     private boolean start;
     private ArrayList<String> Words;
     private ArrayList<String> WordsAdded;
+    private ArrayList<String> gridLetters;
     private Container pane;
     private JButton submit;
     private ArrayList<String> LetterBag;
@@ -30,6 +31,7 @@ public class Scrabble {
 	oldGrid = new String[15][15];
 	clear();
 	start = true;
+	gridLetters= new ArrayList<String>();
 	Words = new ArrayList<String>();
 	WordsAdded= new ArrayList<String>();
 	LetterBag= new ArrayList<String>();
@@ -441,6 +443,16 @@ public class Scrabble {
 	return (Words.toString());
     }
 
+    public boolean branchedWord(String word){
+	for (int x=0; x+1< word.length(); x++){
+	    for (int i=0; i< gridLetters.size();i++){
+		if (word.substring(x,x+1).equals(gridLetters.get(i))){
+		    return true;
+		}
+	    }
+	}
+	return false;
+    }
    
     public String getWordsAdded(){
 	return (WordsAdded.toString());
@@ -449,18 +461,79 @@ public class Scrabble {
     public void endTurn(){
 	horWordsAdded();
 	verWordsAdded();
-	if(checkAllWordsAdded()){
+	if(checkAllWordsAdded() ){
+	     
+	    System.out.println(wordAdded());
+	    System.out.println(gridLetters.toString());
+	    System.out.println(branchedWord(wordAdded())==false && turnNumber!=1);
 
-	    if(playerNumber == 1){
-		addScore1(wordAdded());
-		lastWord = wordAdded();
+	    if (turnNumber!=1 && branchedWord(wordAdded())==false){
+		
+		WordsAdded.remove(WordsAdded.size() - 1);
+
+		System.out.print("\033[2J");
+		System.out.println(toStringOld());
+		System.out.println( "Current Player: " + playerNumber);
+		System.out.println("");
+		System.out.println("Player 1 Score: " + score1);
+		System.out.println("Player 2 Score: " +score2);
+		System.out.println("");
+		System.out.println("Previous Word:");
+		System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+		System.out.println(" " + genScore(wordAdded()));
+		System.out.println("");
+
+		if (playerNumber == 1){
+		
+		    for(int i = player1Letters.size() - 1; i > -1; i--){
+			player1Letters.remove(i);
+		    }
+		
+		    for(int i = 0; i < oldLetters1.size(); i++){
+			player1Letters.add(oldLetters1.get(i));
+		    }
+		    System.out.println(player1Letters.toString());
+		}
+		else{
+		
+		    for(int i = player2Letters.size() - 1; i > -1; i--){
+			player2Letters.remove(i);
+		    }
+
+		    for(int i = 0; i < oldLetters2.size(); i++){
+			player2Letters.add(oldLetters2.get(i));
+		    }
+		    System.out.println(player2Letters.toString());
+		}
+     
+		System.out.println("");
+	    
+		System.out.println("You did not build off of existing letters!");
+		userInput();
+
+		
 	    }
-	    else{addScore2(wordAdded());}
+
+	    else{
+
+		if(playerNumber == 1){
+		    addScore1(wordAdded());
+		    lastWord = wordAdded();
+
+		}
+		else{addScore2(wordAdded());}
+			    	    
+		for (int x=0;x+1<wordAdded().length();x++){
+		    gridLetters.add(wordAdded().substring(x,x+1));
+		}
 
 	    
-	    startNewTurn(); 
+		startNewTurn();
+	    }
 	}
-	else{WordsAdded.remove(WordsAdded.size() - 1);
+	else{
+
+	    WordsAdded.remove(WordsAdded.size() - 1);
 
 	    System.out.print("\033[2J");
 	    System.out.println(toStringOld());
