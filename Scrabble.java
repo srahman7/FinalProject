@@ -461,15 +461,16 @@ public class Scrabble {
     public void endTurn(){
 	horWordsAdded();
 	verWordsAdded();
+	System.out.println(wordAdded());
+	System.out.println(WordsAdded.toString());
+	System.out.println(Words.toString());
+	System.out.println(gridLetters.toString());
+	
 	if(checkAllWordsAdded() ){
 	     
-	    System.out.println(wordAdded());
-	    System.out.println(gridLetters.toString());
-	    System.out.println(branchedWord(wordAdded())==false && turnNumber!=1);
-
 	    if (turnNumber!=1 && branchedWord(wordAdded())==false){
 		
-		WordsAdded.remove(WordsAdded.size() - 1);
+		WordsAdded.remove(WordsAdded.indexOf(wordAdded()));
 
 		System.out.print("\033[2J");
 		System.out.println(toStringOld());
@@ -509,10 +510,62 @@ public class Scrabble {
 		System.out.println("");
 	    
 		System.out.println("You did not build off of existing letters!");
+		//System.out.println("WordsAdded after : " + WordsAdded.toString());
 		userInput();
 
 		
 	    }
+
+	    int dif = WordsAdded.size()-Words.size();
+	    	    if (dif!=1){
+		for (int x =WordsAdded.size()-1; x >= Words.size() ; x--){
+		    WordsAdded.remove(x);
+		    
+		}
+		System.out.print("\033[2J");
+		System.out.println(toStringOld());
+		System.out.println( "Current Player: " + playerNumber);
+		System.out.println("");
+		System.out.println("Player 1 Score: " + score1);
+		System.out.println("Player 2 Score: " +score2);
+		System.out.println("");
+		System.out.println("Previous Word:");
+		System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+		System.out.println(" " + genScore(wordAdded()));
+		System.out.println("");
+
+		if (playerNumber == 1){
+		
+		    for(int i = player1Letters.size() - 1; i > -1; i--){
+			player1Letters.remove(i);
+		    }
+		
+		    for(int i = 0; i < oldLetters1.size(); i++){
+			player1Letters.add(oldLetters1.get(i));
+		    }
+		    System.out.println(player1Letters.toString());
+		}
+		else{
+		
+		    for(int i = player2Letters.size() - 1; i > -1; i--){
+			player2Letters.remove(i);
+		    }
+
+		    for(int i = 0; i < oldLetters2.size(); i++){
+			player2Letters.add(oldLetters2.get(i));
+		    }
+		    System.out.println(player2Letters.toString());
+		}
+     
+		System.out.println("");
+	    
+		System.out.println("Only add one word at a time");
+		System.out.println("after " + WordsAdded.toString());
+		userInput();
+	    }
+
+
+		
 
 	    else{
 
@@ -575,7 +628,7 @@ public class Scrabble {
 	    userInput();
 	}
     }
-	     
+       
     public void startNewTurn(){
 	if(turnNumber % 2 == 1){
 	    playerNumber = 2;}
@@ -659,6 +712,7 @@ public class Scrabble {
 	while(scan.hasNext()){
 	    String letter = scan.next();
 	    if (letter.equals("submit")){ break;}
+	    if (letter.equals("exit")){System.exit(1);}
  	    int row = Integer.parseInt(scan.next());
 	    int col = Integer.parseInt(scan.next());
 	    addLetter(letter, col, row);
