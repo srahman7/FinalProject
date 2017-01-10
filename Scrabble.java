@@ -102,9 +102,8 @@ public class Scrabble {
     }
     
     public void addLetter(String letter, int row, int col){
-	if (row < -1 || row > 15 || col < -1 || col > 15){
-	    System.out.println("Please add to the Scrabble grid");
-	}
+	try{
+	    
 	if (playerNumber == 1){
 	    int index = player1Letters.indexOf(letter);
 	    if(index == -1){
@@ -149,6 +148,10 @@ public class Scrabble {
 		System.out.println("");
 		System.out.println(player2Letters.toString());
 	    }
+	}
+	}
+	catch (IndexOutOfBoundsException e){
+	    System.out.println("Please add to the Scrabble grid");
 	}
     }
 
