@@ -6,6 +6,7 @@ import java.awt.event.*;
 
 public class Scrabble {
     private String[][]grid;
+    private String[][]oldGrid;
     private boolean start;
     private ArrayList<String> Words;
     private ArrayList<String> WordsAdded;
@@ -14,6 +15,8 @@ public class Scrabble {
     private ArrayList<String> LetterBag;
     private ArrayList<String> player1Letters;
     private ArrayList<String> player2Letters;
+    private ArrayList<String> oldLetters1;
+    private ArrayList<String> oldLetters2;
     private int score1;
     private int score2;
     private int turnNumber;
@@ -24,6 +27,7 @@ public class Scrabble {
     
     public Scrabble(){
 	grid = new String[15][15];
+	oldGrid = new String[15][15];
 	clear();
 	start = true;
 	Words = new ArrayList<String>();
@@ -31,6 +35,8 @@ public class Scrabble {
 	LetterBag= new ArrayList<String>();
 	player1Letters= new ArrayList<String>();
 	player2Letters= new ArrayList<String>();
+	oldLetters1= new ArrayList<String>();
+	oldLetters2= new ArrayList<String>();
 	score1=0;
 	score2=0;
 	turnNumber = 1;
@@ -402,6 +408,35 @@ public class Scrabble {
 	return str;
     }
 
+
+    public String toStringOld() {
+	System.out.println("   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15");
+	String str = "1 [";
+	
+	for (int i = 0; i < oldGrid.length; i++) {
+	    
+	    for (int j = 0; j < oldGrid[i].length; j++) {
+		str += oldGrid[i][j];
+		str += "| ";
+	    }
+	    
+	    str += "\b" + "\b" + "]";
+	    str += "\n";
+
+	    if (i < oldGrid.length - 1) {
+
+		if(i < 8){
+	      	str += (i + 2) + " [";
+		}
+		else{
+		    str += (i + 2) + "[";
+		}
+	    }
+	}
+
+	return str;
+    }
+
     public String getWords(){
 	return (Words.toString());
     }
@@ -426,8 +461,46 @@ public class Scrabble {
 	    startNewTurn(); 
 	}
 	else{WordsAdded.remove(WordsAdded.size() - 1);
+
+	    System.out.print("\033[2J");
+	    System.out.println(toStringOld());
+	    System.out.println( "Current Player: " + playerNumber);
 	    System.out.println("");
-	    System.out.println("The word you have submitted is not valid.");}
+	    System.out.println("Player 1 Score: " + score1);
+	    System.out.println("Player 2 Score: " +score2);
+	    System.out.println("");
+	    System.out.println("Previous Word:");
+	    System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+	    System.out.println(" " + genScore(wordAdded()));
+	    System.out.println("");
+
+	    if (playerNumber == 1){
+		
+		for(int i = player1Letters.size() - 1; i > -1; i--){
+		    player1Letters.remove(i);
+		}
+		
+		for(int i = 0; i < oldLetters1.size(); i++){
+		    player1Letters.add(oldLetters1.get(i));
+		}
+		System.out.println(player1Letters.toString());
+	    }
+	    else{
+		
+		for(int i = player2Letters.size() - 1; i > -1; i--){
+		    player2Letters.remove(i);
+		}
+
+		for(int i = 0; i < oldLetters2.size(); i++){
+		    player2Letters.add(oldLetters2.get(i));
+		}
+		 System.out.println(player2Letters.toString());
+	    }
+     
+	    System.out.println("");
+	    System.out.println("The word you have submitted is not valid.");
+	    userInput();
+	}
     }
 	     
     public void startNewTurn(){
@@ -449,10 +522,39 @@ public class Scrabble {
 	System.out.println(" " + genScore(wordAdded()));
 	System.out.println("");
 
-	if(playerNumber == 1){
-	    distributeLetters1();
+
+	for(int row = 0; row < oldGrid.length; row++){
+	    for (int col = 0; col < oldGrid.length; col++){
+		oldGrid[row][col] = grid[row][col];
+	    }
 	}
-	else{distributeLetters2();}
+	
+	if(playerNumber == 1){
+	    
+	    for(int i = oldLetters1.size() - 1; i > -1; i--){
+		oldLetters1.remove(i);
+	    }
+	    
+	    distributeLetters1();
+	    
+	    for(int i = 0; i < player1Letters.size(); i++){
+		oldLetters1.add(player1Letters.get(i));
+	    }
+	    
+	}
+	else{
+	    
+	    for(int i = oldLetters2.size() - 1; i > -1; i--){
+		oldLetters2.remove(i);
+	    }
+	    
+	    distributeLetters2();
+	    
+	    for(int i = 0; i < player2Letters.size(); i++){
+	        oldLetters2.add(player2Letters.get(i));
+	    }
+	    
+	}
 	
 	Words.add(wordAdded());
 	clearWordsAdded();
