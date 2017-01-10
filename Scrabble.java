@@ -24,6 +24,8 @@ public class Scrabble {
     private int playerNumber;
     private Random randgen;
     private String lastWord;
+    private boolean compMode;
+    private String playerType;
    
     
     public Scrabble(){
@@ -45,6 +47,8 @@ public class Scrabble {
 	playerNumber = 1;
 	randgen = new Random();
 	lastWord = " ";
+	compMode=false;
+	playerType= "";
 	//submit.addActionListener(this);
 	//submit.setActionCommand(subWord();
 	
@@ -471,27 +475,67 @@ public class Scrabble {
 	System.out.println(WordsAdded.toString());
 	System.out.println(Words.toString());
 	System.out.println(gridLetters.toString());
-	
-	if(checkAllWordsAdded() ){
+
+
+	if (compMode){
+
+	    if (playerType.equals("1")){
+		System.out.println("hi");
+		if(checkAllWordsAdded() ){ // has to be player 1 bc computer smart
 	     
-	    if (turnNumber!=1 && branchedWord(wordAdded())==false){
+		    if (turnNumber!=1 && branchedWord(wordAdded())==false){
 		
-		WordsAdded.remove(WordsAdded.indexOf(wordAdded()));
+			WordsAdded.remove(WordsAdded.indexOf(wordAdded()));
 
-		System.out.print("\033[2J");
-		System.out.println(toStringOld());
-		System.out.println( "Current Player: " + playerNumber);
-		System.out.println("");
-		System.out.println("Player 1 Score: " + score1);
-		System.out.println("Player 2 Score: " +score2);
-		System.out.println("");
-		System.out.println("Previous Word:");
-		System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
-		System.out.println(" " + genScore(wordAdded()));
-		System.out.println("");
+			System.out.print("\033[2J");
+			System.out.println(toStringOld());
+			System.out.println( "Current Player: " + playerNumber);
+			System.out.println("");
+			System.out.println("Player 1 Score: " + score1);
+			System.out.println("Player 2 Score: " +score2);
+			System.out.println("");
+			System.out.println("Previous Word:");
+			System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+			System.out.println(" " + genScore(wordAdded()));
+			System.out.println("");
 
-		if (playerNumber == 1){
+			for(int i = player1Letters.size() - 1; i > -1; i--){
+			    player1Letters.remove(i);
+			}
 		
+			for(int i = 0; i < oldLetters1.size(); i++){
+			    player1Letters.add(oldLetters1.get(i));
+			}
+			System.out.println(player1Letters.toString());
+			System.out.println("");
+	    
+			System.out.println("You did not build off of existing letters!");
+			userInput();
+		    } // end of if player 1 didn't branch words
+		    else{
+
+			addScore1(wordAdded());
+			lastWord = wordAdded();
+			startNewAITurn();
+		    }
+		}
+
+		else {
+		    WordsAdded.remove(WordsAdded.size() - 1);
+
+		    System.out.print("\033[2J");
+		    System.out.println(toStringOld());
+		    System.out.println( "Current Player: " + playerNumber);
+		    System.out.println("");
+		    System.out.println("Player 1 Score: " + score1);
+		    System.out.println("Player 2 Score: " +score2);
+		    System.out.println("");
+		    System.out.println("Previous Word:");
+		    System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+		    System.out.println(" " + genScore(wordAdded()));
+		    System.out.println("");
+
+		    		
 		    for(int i = player1Letters.size() - 1; i > -1; i--){
 			player1Letters.remove(i);
 		    }
@@ -500,34 +544,145 @@ public class Scrabble {
 			player1Letters.add(oldLetters1.get(i));
 		    }
 		    System.out.println(player1Letters.toString());
+
+		    System.out.println("");
+		    System.out.println("The word you have submitted is not valid.");
+		    userInput();
+
 		}
-		else{
-		
-		    for(int i = player2Letters.size() - 1; i > -1; i--){
-			player2Letters.remove(i);
-		    }
-
-		    for(int i = 0; i < oldLetters2.size(); i++){
-			player2Letters.add(oldLetters2.get(i));
-		    }
-		    System.out.println(player2Letters.toString());
-		}
-     
-		System.out.println("");
-	    
-		System.out.println("You did not build off of existing letters!");
-		//System.out.println("WordsAdded after : " + WordsAdded.toString());
-		userInput();
-
-		
-	    }
-
-	    int dif = WordsAdded.size()-Words.size();
-	    	    if (dif!=1){
-		for (int x =WordsAdded.size()-1; x >= Words.size() ; x--){
-		    WordsAdded.remove(x);
 		    
+		
+	    }
+
+	    else { //comp is playing
+		startNewAITurn();
+	    }
+
+	}
+	
+	else{ // regular 2 player
+	    if(checkAllWordsAdded() ){
+	     
+		if (turnNumber!=1 && branchedWord(wordAdded())==false){
+		
+		    WordsAdded.remove(WordsAdded.indexOf(wordAdded()));
+
+		    System.out.print("\033[2J");
+		    System.out.println(toStringOld());
+		    System.out.println( "Current Player: " + playerNumber);
+		    System.out.println("");
+		    System.out.println("Player 1 Score: " + score1);
+		    System.out.println("Player 2 Score: " +score2);
+		    System.out.println("");
+		    System.out.println("Previous Word:");
+		    System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+		    System.out.println(" " + genScore(wordAdded()));
+		    System.out.println("");
+
+		    if (playerNumber == 1){
+		
+			for(int i = player1Letters.size() - 1; i > -1; i--){
+			    player1Letters.remove(i);
+			}
+		
+			for(int i = 0; i < oldLetters1.size(); i++){
+			    player1Letters.add(oldLetters1.get(i));
+			}
+			System.out.println(player1Letters.toString());
+		    }
+		    else{
+		
+			for(int i = player2Letters.size() - 1; i > -1; i--){
+			    player2Letters.remove(i);
+			}
+
+			for(int i = 0; i < oldLetters2.size(); i++){
+			    player2Letters.add(oldLetters2.get(i));
+			}
+			System.out.println(player2Letters.toString());
+		    }
+     
+		    System.out.println("");
+	    
+		    System.out.println("You did not build off of existing letters!");
+		    //System.out.println("WordsAdded after : " + WordsAdded.toString());
+		    userInput();
+
+		
 		}
+
+		int dif = WordsAdded.size()-Words.size();
+		if (dif!=1){
+		    for (int x =WordsAdded.size()-1; x >= Words.size() ; x--){
+			WordsAdded.remove(x);
+		    
+		    }
+		    System.out.print("\033[2J");
+		    System.out.println(toStringOld());
+		    System.out.println( "Current Player: " + playerNumber);
+		    System.out.println("");
+		    System.out.println("Player 1 Score: " + score1);
+		    System.out.println("Player 2 Score: " +score2);
+		    System.out.println("");
+		    System.out.println("Previous Word:");
+		    System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+		    System.out.println(" " + genScore(wordAdded()));
+		    System.out.println("");
+
+		    if (playerNumber == 1){
+		
+			for(int i = player1Letters.size() - 1; i > -1; i--){
+			    player1Letters.remove(i);
+			}
+		
+			for(int i = 0; i < oldLetters1.size(); i++){
+			    player1Letters.add(oldLetters1.get(i));
+			}
+			System.out.println(player1Letters.toString());
+		    }
+		    else{
+		
+			for(int i = player2Letters.size() - 1; i > -1; i--){
+			    player2Letters.remove(i);
+			}
+
+			for(int i = 0; i < oldLetters2.size(); i++){
+			    player2Letters.add(oldLetters2.get(i));
+			}
+			System.out.println(player2Letters.toString());
+		    }
+     
+		    System.out.println("");
+	    
+		    System.out.println("Only add one word at a time");
+		    System.out.println("after " + WordsAdded.toString());
+		    userInput();
+		}
+
+
+		
+
+		else{
+
+		    if(playerNumber == 1){
+			addScore1(wordAdded());
+			lastWord = wordAdded();
+
+		    }
+		    else{addScore2(wordAdded());}
+			    	    
+		    for (int x=0;x+1<wordAdded().length();x++){
+			gridLetters.add(wordAdded().substring(x,x+1));
+		    }
+
+	    
+		    startNewTurn();
+		}
+	    }
+	    else{
+
+		WordsAdded.remove(WordsAdded.size() - 1);
+
 		System.out.print("\033[2J");
 		System.out.println(toStringOld());
 		System.out.println( "Current Player: " + playerNumber);
@@ -564,74 +719,9 @@ public class Scrabble {
 		}
      
 		System.out.println("");
-	    
-		System.out.println("Only add one word at a time");
-		System.out.println("after " + WordsAdded.toString());
+		System.out.println("The word you have submitted is not valid.");
 		userInput();
 	    }
-
-
-		
-
-	    else{
-
-		if(playerNumber == 1){
-		    addScore1(wordAdded());
-		    lastWord = wordAdded();
-
-		}
-		else{addScore2(wordAdded());}
-			    	    
-		for (int x=0;x+1<wordAdded().length();x++){
-		    gridLetters.add(wordAdded().substring(x,x+1));
-		}
-
-	    
-		startNewTurn();
-	    }
-	}
-	else{
-
-	    WordsAdded.remove(WordsAdded.size() - 1);
-
-	    System.out.print("\033[2J");
-	    System.out.println(toStringOld());
-	    System.out.println( "Current Player: " + playerNumber);
-	    System.out.println("");
-	    System.out.println("Player 1 Score: " + score1);
-	    System.out.println("Player 2 Score: " +score2);
-	    System.out.println("");
-	    System.out.println("Previous Word:");
-	    System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
-	    System.out.println(" " + genScore(wordAdded()));
-	    System.out.println("");
-
-	    if (playerNumber == 1){
-		
-		for(int i = player1Letters.size() - 1; i > -1; i--){
-		    player1Letters.remove(i);
-		}
-		
-		for(int i = 0; i < oldLetters1.size(); i++){
-		    player1Letters.add(oldLetters1.get(i));
-		}
-		System.out.println(player1Letters.toString());
-	    }
-	    else{
-		
-		for(int i = player2Letters.size() - 1; i > -1; i--){
-		    player2Letters.remove(i);
-		}
-
-		for(int i = 0; i < oldLetters2.size(); i++){
-		    player2Letters.add(oldLetters2.get(i));
-		}
-		 System.out.println(player2Letters.toString());
-	    }
-     
-	    System.out.println("");
-	    System.out.println("The word you have submitted is not valid.");
-	    userInput();
 	}
     }
        
@@ -674,6 +764,8 @@ public class Scrabble {
 	    }
 	    
 	}
+
+
 	else{
 	    
 	    for(int i = oldLetters2.size() - 1; i > -1; i--){
@@ -698,6 +790,91 @@ public class Scrabble {
 	
     }
 
+    public void startNewAITurn(){
+	if(turnNumber % 2 == 1){
+	    playerType = "Computer";}
+	else{playerType = "1";}
+
+	turnNumber++;
+		
+	System.out.print("\033[2J");
+	System.out.println(toString());
+	System.out.println( "Current Player: " + playerType);
+	System.out.println("");
+	System.out.println("Player 1 Score: " + score1);
+	System.out.println("Computer Score: " +score2);
+	System.out.println("");
+	System.out.println("Previous Word:");
+	System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+	System.out.println(" " + genScore(wordAdded()));
+	System.out.println("");
+
+
+	for(int row = 0; row < oldGrid.length; row++){
+	    for (int col = 0; col < oldGrid.length; col++){
+		oldGrid[row][col] = grid[row][col];
+	    }
+	}
+	
+	if(playerType.equals("1")){
+	    
+	    for(int i = oldLetters1.size() - 1; i > -1; i--){
+		oldLetters1.remove(i);
+	    }
+	    
+	    distributeLetters1();
+	    
+	    for(int i = 0; i < player1Letters.size(); i++){
+		oldLetters1.add(player1Letters.get(i));
+	    }
+	    	
+	    Words.add(wordAdded());
+	    clearWordsAdded();
+	    clearWords();
+	    horWords();
+	    verWords();
+	    System.out.println("PLEASE ENTER A LETTER FOLLOWED BY THE X-COORDINATE AND Y-COORDINATE: FORMMATED LIKE THIS- A 1 1");
+	    userInput();
+	    
+	}
+
+
+	else{ //playerNumber2 is the computer
+	    
+	    for(int i = oldLetters2.size() - 1; i > -1; i--){
+		oldLetters2.remove(i);
+	    }
+	    
+	    distributeLetters2();
+	    
+	    for(int i = 0; i < player2Letters.size(); i++){
+	        oldLetters2.add(player2Letters.get(i));
+	    }
+	    	    	
+	    Words.add(wordAdded());
+	    clearWordsAdded();
+	    clearWords();
+	    horWords();
+	    verWords();
+	    compInput();
+	    playerType="1";
+
+	}
+	
+    }
+
+    public void compInput(){
+	int tries=0;
+	int row = randgen.nextInt(15);
+	int col = randgen.nextInt(15);
+	String word= "";
+	int letterIndex= randgen.nextInt(player2Letters.size());
+
+	
+	endTurn();
+	
+    }
+
     public void initializeGame(){
 	System.out.print("\033[2J");
 	System.out.println(toString());
@@ -712,6 +889,39 @@ public class Scrabble {
 	userInput();
 	
     }
+    public void initializeAIGame(){
+	compMode=true;
+	playerType= "1";
+	System.out.print("\033[2J");
+	System.out.println(toString());
+	System.out.println( "Current Player: " + playerType);
+	System.out.println("");
+	System.out.println("Player 1 Score: " + score1);
+	System.out.println("Computer Score: " + score2);
+	System.out.println("");
+	loadLetters();
+	distributeLetters1();
+	System.out.println("PLEASE ENTER A LETTER FOLLOWED BY THE X-COORDINATE AND Y-COORDINATE: FORMMATED LIKE THIS- A 1 1");
+	userInput();
+	
+    }
+
+
+    public void modeInput(){
+	System.out.print("\033[2J");
+	System.out.println(toString());
+	System.out.println("Mode ? 2 Players or Computer");
+	while (scan.hasNext()){
+	    String letter = scan.next();
+	    if (letter.equals("Computer")){initializeAIGame();}
+	    if (letter.equals("exit")){System.exit(1);}
+	    else {initializeGame();}
+	}
+    }
+	    
+	    
+	
+	
 
     public void userInput(){
 
@@ -723,16 +933,17 @@ public class Scrabble {
 	    int col = Integer.parseInt(scan.next());
 	    addLetter(letter, col, row);
 	}
-
+	System.out.println("compmode is " + compMode);
 	endTurn();
     }
+
 
     static Scanner scan = new Scanner(System.in);
     
     public static void main(String[] args){
 	
 	Scrabble a = new Scrabble();
-	a.initializeGame();
+	a.modeInput();
 
     }
 
