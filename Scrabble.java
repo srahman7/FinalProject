@@ -102,6 +102,9 @@ public class Scrabble {
     }
     
     public void addLetter(String letter, int row, int col){
+	if (row < -1 || row > 15 || col < -1 || col > 15){
+	    System.out.println("Please add to the Scrabble grid");
+	}
 	if (playerNumber == 1){
 	    int index = player1Letters.indexOf(letter);
 	    if(index == -1){
