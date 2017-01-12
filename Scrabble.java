@@ -23,12 +23,15 @@ public class Scrabble {
     private int playerNumber;
     private Random randgen;
     private String lastWord;
+    private ArrayList<String> oldCoordinates;
+    private ArrayList<String> newCoordinates;
    
     
     public Scrabble(){
 	grid = new String[15][15];
 	oldGrid = new String[15][15];
 	clear();
+	clearOld();
 	start = true;
 	Words = new ArrayList<String>();
 	WordsAdded= new ArrayList<String>();
@@ -37,17 +40,16 @@ public class Scrabble {
 	player2Letters= new ArrayList<String>();
 	oldLetters1= new ArrayList<String>();
 	oldLetters2= new ArrayList<String>();
+	oldCoordinates= new ArrayList<String>();
+	newCoordinates= new ArrayList<String>();
+	oldCoordinates.add("8,8");
 	score1=0;
 	score2=0;
 	turnNumber = 1;
 	playerNumber = 1;
 	randgen = new Random();
 	lastWord = " ";
-	//submit.addActionListener(this);
-	//submit.setActionCommand(subWord();
-	
-	
-	
+			
     }
 
     public void loadLetters(){
@@ -87,6 +89,14 @@ public class Scrabble {
 	for(int row = 0; row < 15; row++){
 	    for(int col = 0; col < 15; col++){
 		grid[row][col] = "_";
+	    }
+	}
+    }
+
+    public void clearOld(){
+	for(int row = 0; row < 15; row++){
+	    for(int col = 0; col < 15; col++){
+		oldGrid[row][col] = "_";
 	    }
 	}
     }
@@ -145,6 +155,7 @@ public class Scrabble {
 		System.out.println(player2Letters.toString());
 	    }
 	}
+	newCoordinates.add(("" + row + "," + col));
     }
 
 
@@ -280,6 +291,16 @@ public class Scrabble {
 	return false;
 	
     }
+
+
+    public boolean checkAdjacent(){
+	boolean result = false;
+	for (int i = 0; i < newCoordinates.size(); i++){
+	    if (oldCoordinates.indexOf(newCoordinates.get(i)) != -1)
+		{result = true;}
+	}
+	return result;
+    }	
 
     public int addScore1(String word){
 	for (int x =0; x+1 <= word.length();x++){
@@ -449,7 +470,7 @@ public class Scrabble {
     public void endTurn(){
 	horWordsAdded();
 	verWordsAdded();
-	if(checkAllWordsAdded()){
+	if(checkAllWordsAdded() && checkAdjacent()){
 
 	    if(playerNumber == 1){
 		addScore1(wordAdded());
@@ -504,6 +525,15 @@ public class Scrabble {
     }
 	     
     public void startNewTurn(){
+
+	for (int i = 0; i < newCoordinates.size(); i++){
+	    oldCoordinates.add(newCoordinates.get(i));
+	}
+	
+	for (int i = newCoordinates.size() - 1; i > -1; i--){
+	    newCoordinates.remove(i);
+	}
+	    	
 	if(turnNumber % 2 == 1){
 	    playerNumber = 2;}
 	else{playerNumber = 1;}
@@ -561,7 +591,7 @@ public class Scrabble {
 	clearWords();
 	horWords();
 	verWords();
-	System.out.println("PLEASE ENTER A LETTER FOLLOWED BY THE X-COORDINATE AND Y-COORDINATE: FORMMATED LIKE THIS- A 1 1");
+	System.out.println("PLEASE ENTER A LETTER FOLLOWED BY THE X-COORDINATE AND Y-COORDINATE: FORMMATTED LIKE THIS- A 1 1");
 	userInput();
 	
     }
@@ -575,8 +605,13 @@ public class Scrabble {
 	System.out.println("Player 2 Score: " + score2);
 	System.out.println("");
 	loadLetters();
+	
 	distributeLetters1();
-	System.out.println("PLEASE ENTER A LETTER FOLLOWED BY THE X-COORDINATE AND Y-COORDINATE: FORMMATED LIKE THIS- A 1 1");
+	for(int i = 0; i < player1Letters.size(); i++){
+		oldLetters1.add(player1Letters.get(i));
+	    }
+	
+	System.out.println("PLEASE ENTER A LETTER FOLLOWED BY THE X-COORDINATE AND Y-COORDINATE: FORMATTED LIKE THIS- A 1 1");
 	userInput();
 	
     }
