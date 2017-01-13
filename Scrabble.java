@@ -113,6 +113,7 @@ public class Scrabble {
     
     public void addLetter(String letter, int row, int col){
 	if (playerNumber == 1){
+
 	    int index = player1Letters.indexOf(letter);
 	    if(index == -1){
 		System.out.println("You do not have that letter.");
@@ -655,10 +656,8 @@ public class Scrabble {
     public void endTurn(){
 	horWordsAdded();
 	verWordsAdded();
-	if(checkAllWordsAdded()
-	   && checkAdjacent()
-	   && (checkNumWords() < 2)
-	   ){
+
+	if(checkAllWordsAdded() && checkAdjacent() && (checkNumWords() < 2)){
 
 	    if (compMode){
 		if (playerType.equals("1")){
@@ -683,7 +682,10 @@ public class Scrabble {
 		startNewTurn();
 	    }
 	}
-	else{WordsAdded.remove(WordsAdded.size() - 1);
+
+	    
+	else{
+	    WordsAdded.remove(WordsAdded.size() - 1);
 
 	    System.out.print("\033[2J");
 
@@ -726,6 +728,7 @@ public class Scrabble {
 	    }
      
 	    System.out.println("");
+
 	    System.out.println("The word you have submitted is not valid.");
 	    userInput();
 	}
@@ -922,8 +925,18 @@ public class Scrabble {
 	    if (letter.equals("exit")){System.exit(1);}
  	    int row = Integer.parseInt(scan.next());
 	    int col = Integer.parseInt(scan.next());
-	    addLetter(letter, col, row);
+	    	    	    	
+	    if (turnNumber==1 && start && (row!=7 || col!=7)){
+		System.out.println("You must make the first word in the center!");
+	    }
+	    else{
+
+		addLetter(letter, col, row);
+		start=false;
+	    }
 	}
+
+
 	//System.out.println("compmode is " + compMode);
 	endTurn();
     }
