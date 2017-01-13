@@ -5,8 +5,8 @@ import java.awt.*;//NEW STUFF!
 import java.awt.event.*;
 
 public class Scrabble {
-    private String[][]grid;
-    private String[][]oldGrid;
+    private Letter[][]grid;
+    private Letter[][]oldGrid;
     private boolean start;
     private ArrayList<String> Words;
     private ArrayList<String> WordsAdded;
@@ -23,13 +23,13 @@ public class Scrabble {
     private int playerNumber;
     private Random randgen;
     private String lastWord;
-    private ArrayList<String> oldCoordinates;
-    private ArrayList<String> newCoordinates;
+    private ArrayList<Letter> oldLetters;
+    private ArrayList<Letter> newLetters;
    
     
     public Scrabble(){
-	grid = new String[15][15];
-	oldGrid = new String[15][15];
+	grid = new Letter[15][15];
+	oldGrid = new Letter[15][15];
 	clear();
 	clearOld();
 	start = true;
@@ -40,9 +40,10 @@ public class Scrabble {
 	player2Letters= new ArrayList<String>();
 	oldLetters1= new ArrayList<String>();
 	oldLetters2= new ArrayList<String>();
-	oldCoordinates= new ArrayList<String>();
-	newCoordinates= new ArrayList<String>();
-	oldCoordinates.add("8,8");
+	oldLetters= new ArrayList<Letter>();
+	newLetters= new ArrayList<Letter>();
+	Letter center = new Letter("_",7,7);
+	oldLetters.add(center);
 	score1=0;
 	score2=0;
 	turnNumber = 1;
@@ -88,7 +89,7 @@ public class Scrabble {
     public void clear(){
 	for(int row = 0; row < 15; row++){
 	    for(int col = 0; col < 15; col++){
-		grid[row][col] = "_";
+		grid[row][col] = new Letter("_",(row+1),(col+1));
 	    }
 	}
     }
@@ -96,7 +97,7 @@ public class Scrabble {
     public void clearOld(){
 	for(int row = 0; row < 15; row++){
 	    for(int col = 0; col < 15; col++){
-		oldGrid[row][col] = "_";
+		oldGrid[row][col] = new Letter("_",(row+1),(col+1));
 	    }
 	}
     }
@@ -117,7 +118,7 @@ public class Scrabble {
 	    }
 	    else{
 		player1Letters.remove(player1Letters.indexOf(letter)); 
-		grid[row -  1][col - 1] = letter;
+		grid[row -  1][col - 1] = new Letter(letter,(row-1),(col-1));
 		System.out.print("\033[2J");
 		System.out.println(toString());
 		System.out.println( "Current Player: " + playerNumber);
@@ -140,7 +141,7 @@ public class Scrabble {
 	    }
 	    else{
 		player2Letters.remove(player2Letters.indexOf(letter)); 
-		grid[row -  1][col - 1] = letter;
+		grid[row -  1][col - 1] = new Letter(letter,(row-1),(col-1));
 		System.out.print("\033[2J");
 		System.out.println(toString());
 		System.out.println( "Current Player: " + playerNumber);
@@ -155,7 +156,7 @@ public class Scrabble {
 		System.out.println(player2Letters.toString());
 	    }
 	}
-	newCoordinates.add(("" + row + "," + col));
+	newLetters.add(new Letter(letter,(row-1),(col-1)));;
     }
 
 
@@ -165,7 +166,7 @@ public class Scrabble {
 	
 	for(int row = 0; row < 15; row++){
 	    for(int col = 0; col < 15; col++){
-		hor += grid[row][col];
+		hor += (grid[row][col]).getVal();
 	    }
 	}
 
@@ -185,7 +186,7 @@ public class Scrabble {
 	
 	for(int col = 0; col < 15; col++){
 	    for(int row = 0; row < 15; row++){
-		ver += grid[row][col];
+		ver += (grid[row][col]).getVal();
 	    }
 	}
 
@@ -204,7 +205,7 @@ public class Scrabble {
 	
 	for(int row = 0; row < 15; row++){
 	    for(int col = 0; col < 15; col++){
-		hor += grid[row][col];
+		hor += (grid[row][col]).getVal();
 	    }
 	}
 
@@ -224,7 +225,7 @@ public class Scrabble {
 	
 	for(int col = 0; col < 15; col++){
 	    for(int row = 0; row < 15; row++){
-		ver += grid[row][col];
+		ver += (grid[row][col]).getVal();
 	    }
 	}
 
@@ -292,15 +293,24 @@ public class Scrabble {
 	
     }
 
-
+  
     public boolean checkAdjacent(){
 	boolean result = false;
-	for (int i = 0; i < newCoordinates.size(); i++){
-	    if (oldCoordinates.indexOf(newCoordinates.get(i)) != -1)
+
+	for (int j = 0; j < oldLetters.size(); j++){
+	for (int i = 0; i < newLetters.size(); i++){
+	    if ((newLetters.get(i)).compareTo(oldLetters.get(j)) != -1)
 		{result = true;}
+	}
 	}
 	return result;
     }	
+
+    public int checkNumWords(){
+	int num = 0;
+	num = WordsAdded.size() - Words.size();
+	return num;
+    }
 
     public int addScore1(String word){
 	for (int x =0; x+1 <= word.length();x++){
@@ -408,7 +418,7 @@ public class Scrabble {
 	for (int i = 0; i < grid.length; i++) {
 	    
 	    for (int j = 0; j < grid[i].length; j++) {
-		str += grid[i][j];
+		str += (grid[i][j]).getVal();
 		str += "| ";
 	    }
 	    
@@ -437,7 +447,7 @@ public class Scrabble {
 	for (int i = 0; i < oldGrid.length; i++) {
 	    
 	    for (int j = 0; j < oldGrid[i].length; j++) {
-		str += oldGrid[i][j];
+		str += (oldGrid[i][j]).getVal();
 		str += "| ";
 	    }
 	    
@@ -470,7 +480,10 @@ public class Scrabble {
     public void endTurn(){
 	horWordsAdded();
 	verWordsAdded();
-	if(checkAllWordsAdded() && checkAdjacent()){
+	if(checkAllWordsAdded()
+	   && checkAdjacent()
+	   && (checkNumWords() < 2)
+	   ){
 
 	    if(playerNumber == 1){
 		addScore1(wordAdded());
@@ -484,15 +497,20 @@ public class Scrabble {
 	else{WordsAdded.remove(WordsAdded.size() - 1);
 
 	    System.out.print("\033[2J");
-	    System.out.println(toStringOld());
+
+	    for(int row = 0; row < 15; row++){
+		for(int col = 0; col < 15; col++){
+		    grid[row][col] = oldGrid[row][col];
+		}
+	    }	    
+	    System.out.println(toString());
 	    System.out.println( "Current Player: " + playerNumber);
 	    System.out.println("");
 	    System.out.println("Player 1 Score: " + score1);
 	    System.out.println("Player 2 Score: " +score2);
 	    System.out.println("");
 	    System.out.println("Previous Word:");
-	    System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
-	    System.out.println(" " + genScore(wordAdded()));
+	    System.out.print(lastWord.substring(0, lastWord.length() - 1));
 	    System.out.println("");
 
 	    if (playerNumber == 1){
@@ -525,14 +543,15 @@ public class Scrabble {
     }
 	     
     public void startNewTurn(){
-
-	for (int i = 0; i < newCoordinates.size(); i++){
-	    oldCoordinates.add(newCoordinates.get(i));
+	
+	for (int i = 0; i < newLetters.size(); i++){
+	    oldLetters.add(newLetters.get(i));
 	}
 	
-	for (int i = newCoordinates.size() - 1; i > -1; i--){
-	    newCoordinates.remove(i);
+	for (int i = newLetters.size() - 1; i > -1; i--){
+	    newLetters.remove(i);
 	}
+	
 	    	
 	if(turnNumber % 2 == 1){
 	    playerNumber = 2;}
