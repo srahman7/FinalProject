@@ -696,7 +696,7 @@ public class Scrabble {
 	while (nothing && count<compWords.size()){
 
 	    word=compWords.get(count);
-	    while (nothing && tries<5){
+	    while (nothing && tries<150){
 		System.out.println(tries);
 		if ( addWords( word, row, col) ){
 		    nothing =false;
