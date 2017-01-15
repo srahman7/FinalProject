@@ -34,6 +34,8 @@ public class Scrabble {
     private ArrayList<String> gridLetters;
     private ArrayList<String> checkWords;
     //private ArrayList<Integer> colsAllowed;
+    private long startTime;
+    private boolean timedMode;
     
     
     public Scrabble(){
@@ -53,6 +55,7 @@ public class Scrabble {
 	newLetters= new ArrayList<Letter>();
 	Letter center = new Letter("_",8,8);
 	oldLetters.add(center);
+	startTime = System.currentTimeMillis();
 	score1=0;
 	score2=0;
 	turnNumber = 1;
@@ -60,6 +63,7 @@ public class Scrabble {
 	randgen = new Random();
 	lastWord = " ";
         data = new ArrayList<String>();
+	timedMode = false;
 	compWords = new ArrayList<String>();
 	helper= new ArrayList<String>();
 	compMode=false;
@@ -724,6 +728,15 @@ public class Scrabble {
 	horWordsAdded();
 	verWordsAdded();
 
+	if(timedMode){
+
+	long endTime = System.currentTimeMillis();
+
+	if(endTime - startTime > 90){
+	    System.out.println("You have exceeded the time limit.");
+	    System.exit(1);
+	}
+	}
 	
 	//System.out.println(oldLetters.toString());
 	//System.out.println(newLetters.toString());
@@ -839,6 +852,12 @@ public class Scrabble {
     }
 	     
     public void startNewTurn(){
+
+	
+	if(timedMode){
+
+	    startTime = System.currentTimeMillis();
+	    }
 	
 	for (int i = 0; i < newLetters.size(); i++){
 	    oldLetters.add(newLetters.get(i));
@@ -1014,6 +1033,13 @@ public class Scrabble {
 	System.out.println("Mode? Select by typing \"2Player\" or \"Computer\"");
 	while (scan.hasNext()){
 	    String letter = scan.next();
+	    if (letter.equals("2Player")){
+		System.out.println("\"Normal\" or \"Timed\" ?");
+		String mode2 = scan.next();
+		if (mode2.equals("Timed")){
+			timedMode = true;
+		    }
+	    }
 	    if (letter.equals("Computer")){initializeAIGame();}
 	    if (letter.equals("exit")){System.exit(1);}
 	    else {initializeGame();}
