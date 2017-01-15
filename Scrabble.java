@@ -30,8 +30,10 @@ public class Scrabble {
     private ArrayList<String> helper;
     private boolean compMode;
     private String playerType;
-    private ArrayList<Integer> rowsAllowed;
-    private ArrayList<Integer> colsAllowed;
+    private ArrayList<Integer>pointsAllowed;
+    private ArrayList<String> gridLetters;
+    private ArrayList<String> checkWords;
+    //private ArrayList<Integer> colsAllowed;
     
     
     public Scrabble(){
@@ -62,8 +64,10 @@ public class Scrabble {
 	helper= new ArrayList<String>();
 	compMode=false;
 	playerType= "";
-	rowsAllowed= new ArrayList<Integer>();
-	colsAllowed = new ArrayList<Integer>();
+	pointsAllowed= new ArrayList<Integer>();
+	gridLetters=new ArrayList<String>();
+	checkWords= new ArrayList<String>();
+	//colsAllowed = new ArrayList<Integer>();
 	
     }
 
@@ -165,10 +169,7 @@ public class Scrabble {
 	    }
 	}
 	newLetters.add(new Letter(letter,(row-1),(col-1)));
-	rowsAllowed.add(row-2);
-	colsAllowed.add(col-2);
-	rowsAllowed.add(row);
-	colsAllowed.add(col);
+
      
 	/*newLetters.add(new Letter(letter,(row+1),col));
 	newLetters.add(new Letter(letter,row,(col-1)));
@@ -375,6 +376,13 @@ public class Scrabble {
 	//return helper.toString();
     }
 
+    public void getOldLetters(){
+	for (int x =0; x < newLetters.size();x++){
+	    gridLetters.add((newLetters.get(x)).getVal());
+	}
+	System.out.println(gridLetters.toString());
+    }
+
     public void checkHelper(){
 	int check=0;
 	String word="";
@@ -395,16 +403,34 @@ public class Scrabble {
 	    
 	    //System.out.println(check);
 	    if (check==word.length()){
-		compWords.add(word);
+		checkWords.add(word);
 	    }
 		    
 	}
 	//System.out.println(compWords.toString());
     }
 
+    public void checkLast(){
+	String word="";
+	boolean checked =false;
+	int count=0;
+	getOldLetters();
+	for (int i =0; i < checkWords.size();i++){
+	    word=checkWords.get(i);
+	    for (int x =0; x+1<= word.length();x++){
+		if (gridLetters.contains(word.substring(x,x+1))){
+		    compWords.add(word);
+		    break;
+		}
+
+		
+	    }
+	}
+    }
+
 
        public boolean addWords(String word, int row, int col){
-	int determinant = randgen.nextInt(4);
+	int determinant = randgen.nextInt(2);
 	int deltaX=0;
 	int deltaY=0;
 	// add vertical
@@ -412,31 +438,32 @@ public class Scrabble {
 	    deltaX=1;
 	    deltaY=0;
 	}
-	// add reverse vertical
-	if (determinant == 1){
-	    deltaX=-1;
-	    deltaY=0;
-	}
+
 	// add horizontal
-	if (determinant == 2){
+	if (determinant == 1){
 	    deltaX=0;
 	    deltaY=1;
-	}
-	//add reverse horizontal 
-	if (determinant == 3){
-	    deltaX=0;
-	    deltaY=-1;
 	}
 
 	boolean res = true;
 
-	if (word.length()+row>=grid[0].length || row+word.length()*deltaX< 0 || word.length()*deltaY+col>=grid.length || col+word.length()*deltaY < 0){
+	if (word.length()+row>=grid[0].length || row+word.length()*deltaX< 0 || word.length()*deltaY+col>=grid.length || col+word.length()*deltaY < 0 && !(word.substring(0,1).equals((grid[row][col]).getVal())) ){
 	    return false;
 	}
-	for (int i=0; i+1<= word.length(); i++){
-	    grid[row + i * deltaX][col + i * deltaY]=new Letter( word.substring(i,i+1),(row + i * deltaX),(col + i * deltaY) );
-	}	
-	return true;
+
+	else{
+	    for (int x =0; x+1 <= word.length();x++){
+		if ( !((grid[row + x * deltaX][col + x * deltaY]).getVal()).equals("_") && !((grid[row + x * deltaX][col + x * deltaY]).getVal()).equals(word.substring(x,x+1)) ){
+		    return false;
+		}
+	    }
+    
+	    for (int i=0; i+1<= word.length(); i++){
+		grid[row + i * deltaX][col + i * deltaY]=new Letter( word.substring(i,i+1),(row + i * deltaX),(col + i * deltaY) );
+		newLetters.add(new Letter(word.substring(i,i+1),(row+i*deltaX),(col+ i * deltaY)));
+	    }	
+	    return true;
+	}
 			
 	    
        }
@@ -634,23 +661,38 @@ public class Scrabble {
 	int tries=0;
 	String word="";
 
-	int indexR = randgen.nextInt(rowsAllowed.size());
-	int indexC = randgen.nextInt(colsAllowed.size());
-	int row= randgen.nextInt(15);
-	int col= randgen.nextInt(15);
+	//int indexR = randgen.nextInt(rowsAllowed.size());
+	//int indexC = randgen.nextInt(colsAllowed.size());
+
+	int index = 1;
+	while ((index % 2) == 0){
+	    index = randgen.nextInt(pointsAllowed.size());
+	}
+	int row= pointsAllowed.get(index);
+	int col= pointsAllowed.get(index+1);
+
+	//row=10;
+	//col=10;
+
+	System.out.println(row);
+	System.out.println(col);
 
 	findWords();
 	checkHelper();
+	//System.out.println(checkWords.toString());
+	checkLast();
+	//System.out.println(compWords.toString());
 	sort();
-	
+
 	if (compWords.size()==0){
 	    System.out.println("No words to add!");
 	    tries=1000;
 	}
 
 	while (nothing && count<compWords.size()){
+
 	    word=compWords.get(count);
-	    while (nothing && tries<20){
+	    while (nothing && tries<5){
 		System.out.println(tries);
 		if ( addWords( word, row, col) ){
 		    nothing =false;
@@ -658,16 +700,20 @@ public class Scrabble {
 		    addScore2(word);
 		    Words.add(word);
 		    tries=1000;
+		    newLetters.clear();
+		    pointsAllowed.remove(index);
+		    pointsAllowed.remove(index+1);
 
-		    for (int x =0; x+1 <= word.length();x++){
-			player2Letters.remove(word.substring(x,x+1));
-		    }
+			for (int x =0; x+1 <= word.length();x++){
+			    player2Letters.remove(word.substring(x,x+1));
+			}
 		}
 		else {tries++;}
 	    }
 	    tries=0;
+	    count++;
 	}
-	if (nothing){
+	if (nothing && tries>=5){
 	    System.out.println("The computer gave up!");
 	}
 
@@ -678,19 +724,48 @@ public class Scrabble {
 	horWordsAdded();
 	verWordsAdded();
 
+	
+	//System.out.println(oldLetters.toString());
+	//System.out.println(newLetters.toString());
+	//System.out.println(checkAdjacent());
+	
 	if(checkAllWordsAdded() && checkAdjacent() && (checkNumWords() < 2)){
 
 	    if (compMode){
 		if (playerType.equals("1")){
 		    addScore1(wordAdded());
 		    lastWord = wordAdded();
+		    for (int x =0; x < newLetters.size();x++){
+			int r = (newLetters.get(x)).getRow();
+			int c = (newLetters.get(x)).getCol();
+			/*if ( ((grid[r+1][c]).getVal()).equals("_") ){
+			    pointsAllowed.add(r+1);
+			    pointsAllowed.add(c);
+			}
+			if ( ((grid[r-1][c]).getVal()).equals("_") ){
+			    pointsAllowed.add(r-1);
+			    pointsAllowed.add(c);
+			}
+			if ( ((grid[r][c+1]).getVal()).equals("_") ){
+			    pointsAllowed.add(r);
+			    pointsAllowed.add(c+1);
+			}
+			if ( ((grid[r][c-1]).getVal()).equals("_") ){
+			    pointsAllowed.add(r);
+			    pointsAllowed.add(c-1);
+			    }*/
+			pointsAllowed.add(r);
+			pointsAllowed.add(c);
+		    }
 		    startNewAITurn();
+		    
 		}
 		else{
 		    compInput();
 		    startNewAITurn();
 		}
 	    }
+	    
 	    else{
 
 		if(playerNumber == 1){
@@ -706,7 +781,7 @@ public class Scrabble {
 
 	    
 	else{
-	    
+
 	    
 	    clearWordsAdded();
 	 
