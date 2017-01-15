@@ -46,7 +46,7 @@ public class Scrabble {
 	oldLetters2= new ArrayList<String>();
 	oldLetters= new ArrayList<Letter>();
 	newLetters= new ArrayList<Letter>();
-	Letter center = new Letter("_",7,7);
+	Letter center = new Letter("_",8,8);
 	oldLetters.add(center);
 	score1=0;
 	score2=0;
@@ -632,7 +632,7 @@ public class Scrabble {
 
 	while (nothing && count<compWords.size()){
 	    word=compWords.get(count);
-	    while (nothing && tries<20){
+	    while (nothing && tries<5){
 		if ( addWords( word, row, col) ){
 		    nothing =false;
 		    lastWord= word;
@@ -712,7 +712,7 @@ public class Scrabble {
 	    System.out.print(lastWord.substring(0, lastWord.length()));
 	    System.out.println("");
 
-	    if (playerNumber == 1){
+	    if (playerNumber == 1 || playerType.equals("1")){
 		
 		for(int i = player1Letters.size() - 1; i > -1; i--){
 		    player1Letters.remove(i);
@@ -934,7 +934,7 @@ public class Scrabble {
  	    int row = Integer.parseInt(scan.next());
 	    int col = Integer.parseInt(scan.next());
 	    	    	    	
-	    if (turnNumber==1 && start && (row!=7 || col!=7)){
+	    if (turnNumber==1 && start && (row!=8 || col!=8)){
 		System.out.println("You must make the first word in the center!");
 	    }
 	    else{
