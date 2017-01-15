@@ -30,6 +30,9 @@ public class Scrabble {
     private ArrayList<String> helper;
     private boolean compMode;
     private String playerType;
+    private ArrayList<Integer> rowsAllowed;
+    private ArrayList<Integer> colsAllowed;
+    
     
     public Scrabble(){
 	grid = new Letter[15][15];
@@ -59,6 +62,8 @@ public class Scrabble {
 	helper= new ArrayList<String>();
 	compMode=false;
 	playerType= "";
+	rowsAllowed= new ArrayList<Integer>();
+	colsAllowed = new ArrayList<Integer>();
 	
     }
 
@@ -118,6 +123,7 @@ public class Scrabble {
 	    if(index == -1){
 		System.out.println("You do not have that letter.");
 	    }
+
 	    else{
 		player1Letters.remove(player1Letters.indexOf(letter)); 
 		grid[row -  1][col - 1] = new Letter(letter,(row-1),(col-1));
@@ -159,6 +165,15 @@ public class Scrabble {
 	    }
 	}
 	newLetters.add(new Letter(letter,(row-1),(col-1)));
+	rowsAllowed.add(row-2);
+	colsAllowed.add(col-2);
+	rowsAllowed.add(row);
+	colsAllowed.add(col);
+     
+	/*newLetters.add(new Letter(letter,(row+1),col));
+	newLetters.add(new Letter(letter,row,(col-1)));
+	newLetters.add(new Letter(letter,row,(col+1)));*/
+	
     }
 
 
@@ -419,7 +434,7 @@ public class Scrabble {
 	    return false;
 	}
 	for (int i=0; i+1<= word.length(); i++){
-	    grid[row + i * deltaX][col + i * deltaY]=new Letter( word.substring(i,i+1),row + i * deltaX,col + i * deltaY );
+	    grid[row + i * deltaX][col + i * deltaY]=new Letter( word.substring(i,i+1),(row + i * deltaX),(col + i * deltaY) );
 	}	
 	return true;
 			
@@ -618,6 +633,9 @@ public class Scrabble {
 	boolean nothing=true;
 	int tries=0;
 	String word="";
+
+	int indexR = randgen.nextInt(rowsAllowed.size());
+	int indexC = randgen.nextInt(colsAllowed.size());
 	int row= randgen.nextInt(15);
 	int col= randgen.nextInt(15);
 
@@ -632,12 +650,14 @@ public class Scrabble {
 
 	while (nothing && count<compWords.size()){
 	    word=compWords.get(count);
-	    while (nothing && tries<5){
+	    while (nothing && tries<20){
+		System.out.println(tries);
 		if ( addWords( word, row, col) ){
 		    nothing =false;
 		    lastWord= word;
 		    addScore2(word);
 		    Words.add(word);
+		    tries=1000;
 
 		    for (int x =0; x+1 <= word.length();x++){
 			player2Letters.remove(word.substring(x,x+1));
@@ -645,6 +665,7 @@ public class Scrabble {
 		}
 		else {tries++;}
 	    }
+	    tries=0;
 	}
 	if (nothing){
 	    System.out.println("The computer gave up!");
