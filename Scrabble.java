@@ -36,9 +36,11 @@ public class Scrabble {
     //private ArrayList<Integer> colsAllowed;
     private long startTime;
     private boolean timedMode;
+    private boolean noWords;
     
     
     public Scrabble(){
+	noWords= false;
 	grid = new Letter[15][15];
 	oldGrid = new Letter[15][15];
 	clear();
@@ -690,6 +692,7 @@ public class Scrabble {
 
 	if (compWords.size()==0){
 	    System.out.println("No words to add!");
+	    noWords=true;
 	    tries=1000;
 	}
 
@@ -697,7 +700,7 @@ public class Scrabble {
 
 	    word=compWords.get(count);
 	    while (nothing && tries<150){
-		System.out.println(tries);
+		//System.out.println(tries);
 		if ( addWords( word, row, col) ){
 		    nothing =false;
 		    lastWord= word;
@@ -717,7 +720,8 @@ public class Scrabble {
 	    tries=0;
 	    count++;
 	}
-	if (nothing && tries>=5){
+	if (nothing && count>= compWords.size()){
+	    noWords=true;
 	    System.out.println("The computer gave up!");
 	}
 
@@ -1004,9 +1008,15 @@ public class Scrabble {
 	System.out.println("Computer Score: " +score2);
 	System.out.println("");
 	System.out.println("Previous Word:");
-	System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+	if (noWords){
+	    System.out.println("The computer could not add any words!");
+	}
+	else{
+	    System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+	}
 	System.out.println(" " + genScore(wordAdded()));
 	System.out.println("");
+	
 
 
 	for(int row = 0; row < oldGrid.length; row++){
