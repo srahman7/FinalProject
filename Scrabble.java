@@ -770,11 +770,21 @@ public class Scrabble {
 			pointsAllowed.add(r);
 			pointsAllowed.add(c);
 		    }
+		    if (score1>=50){
+			System.out.println("Player 1 has won!");
+			System.exit(0);
+		    }
 		    startNewAITurn();
 		    
 		}
+
 		else{
 		    compInput();
+		    if (score2>=50){
+			System.out.println("Computer has won");
+			System.exit(0);
+		    }
+		    
 		    startNewAITurn();
 		}
 	    }
@@ -784,8 +794,19 @@ public class Scrabble {
 		if(playerNumber == 1){
 		    addScore1(wordAdded());
 		    lastWord = wordAdded();
+		    if (score1>=50){
+			System.out.println("Player 1 has won!");
+			System.exit(0);
+		    }
 		}
-		else{addScore2(wordAdded());}
+		else{
+		    addScore2(wordAdded());
+		    lastWord= wordAdded();
+		    if (score2>=50){
+			System.out.println("Player 2 has won");
+			System.exit(0);
+		    }
+		}
 
 	    
 		startNewTurn();
