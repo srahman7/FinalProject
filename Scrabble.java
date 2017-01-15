@@ -926,7 +926,7 @@ public class Scrabble {
  	    int row = Integer.parseInt(scan.next());
 	    int col = Integer.parseInt(scan.next());
 	    	    	    	
-	    if (turnNumber==1 && start && (row!=7 || col!=7)){
+	    if (turnNumber==1 && start && (row!=8 || col!=8)){
 		System.out.println("You must make the first word in the center!");
 	    }
 	    else{
