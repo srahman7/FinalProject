@@ -32,7 +32,7 @@ public class Letter implements Comparable<Letter>{
 	
 	if (
 	    (this.row == x.row - 1) &&
-	    (this.col == x.col + 1)
+	    (this.col == x.col)
 	    )
 	    {return 0;}
 	else{return -1;}

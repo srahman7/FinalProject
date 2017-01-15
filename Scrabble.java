@@ -158,7 +158,7 @@ public class Scrabble {
 		System.out.println(player2Letters.toString());
 	    }
 	}
-	newLetters.add(new Letter(letter,(row-1),(col-1)));;
+	newLetters.add(new Letter(letter,(row-1),(col-1)));
     }
 
 
@@ -685,7 +685,15 @@ public class Scrabble {
 
 	    
 	else{
-	    WordsAdded.remove(WordsAdded.size() - 1);
+	    
+	    
+	    clearWordsAdded();
+	 
+	    for(int i = newLetters.size() - 1; i > -1; i--){
+		    newLetters.remove(i);
+	    }
+
+	    
 
 	    System.out.print("\033[2J");
 
@@ -907,7 +915,7 @@ public class Scrabble {
     public void modeInput(){
 	System.out.print("\033[2J");
 	System.out.println(toString());
-	System.out.println("Mode ? 2 Players or Computer");
+	System.out.println("Mode? Select by typing \"2Player\" or \"Computer\"");
 	while (scan.hasNext()){
 	    String letter = scan.next();
 	    if (letter.equals("Computer")){initializeAIGame();}
@@ -926,7 +934,7 @@ public class Scrabble {
  	    int row = Integer.parseInt(scan.next());
 	    int col = Integer.parseInt(scan.next());
 	    	    	    	
-	    if (turnNumber==1 && start && (row!=8 || col!=8)){
+	    if (turnNumber==1 && start && (row!=7 || col!=7)){
 		System.out.println("You must make the first word in the center!");
 	    }
 	    else{
