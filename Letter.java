@@ -42,6 +42,14 @@ public class Letter implements Comparable<Letter>{
 	return this.val;
     }
 
+    public int getRow(){
+	return row;
+    }
+
+    public int getCol(){
+	return col;
+    }
+
     public String getCoordinates(){
 	return ("" + row + "," + col);
     }
