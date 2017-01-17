@@ -21,6 +21,7 @@ List of Working features / Things I should test:
 
 List of unresolved bugs:
 -sometimes the computer takes a long time to add a word or may crash
+-after the AI mode inputs a word the words player 1 tries to add doesn't get approved
 
 
 Directions on how to compile and run your code:
