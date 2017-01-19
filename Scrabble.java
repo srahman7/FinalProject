@@ -731,7 +731,7 @@ public class Scrabble {
 
 	word=compWords.get(count);
 	while (nothing && tries<5){
-	    System.out.println(tries);
+	    //System.out.println(tries);
 	    index= randgen.nextInt(rowsAllowed.size());
 	    row = rowsAllowed.get(index);
 	    col = colsAllowed.get(index);
@@ -1155,7 +1155,7 @@ public class Scrabble {
 
 		addLetter(letter, col, row);
 		start=false;
-		System.out.println("hello");
+		//System.out.println("hello");
 	    }
 	}
 
