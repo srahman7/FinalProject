@@ -17,6 +17,7 @@ public class Scrabble {
     private ArrayList<String> player2Letters;
     private ArrayList<String> oldLetters1;
     private ArrayList<String> oldLetters2;
+    
     private int score1;
     private int score2;
     private int turnNumber;
@@ -33,7 +34,8 @@ public class Scrabble {
     private ArrayList<Integer>pointsAllowed;
     private ArrayList<String> gridLetters;
     private ArrayList<String> checkWords;
-    //private ArrayList<Integer> colsAllowed;
+    private ArrayList<Integer> colsAllowed;
+    private ArrayList<Integer> rowsAllowed;
     private long startTime;
     private boolean timedMode;
     private boolean noWords;
@@ -73,7 +75,8 @@ public class Scrabble {
 	pointsAllowed= new ArrayList<Integer>();
 	gridLetters=new ArrayList<String>();
 	checkWords= new ArrayList<String>();
-	//colsAllowed = new ArrayList<Integer>();
+	rowsAllowed= new ArrayList<Integer>();
+	colsAllowed = new ArrayList<Integer>();
 	
     }
 
@@ -126,8 +129,8 @@ public class Scrabble {
 	WordsAdded.clear();
     }
     
-    public void addLetter(String letter, int row, int col){
-	if (playerNumber == 1){
+  public void addLetter(String letter, int row, int col){
+	if (playerNumber == 1 || playerType.equals("1")){
 
 	    int index = player1Letters.indexOf(letter);
 	    if(index == -1){
@@ -139,10 +142,19 @@ public class Scrabble {
 		grid[row -  1][col - 1] = new Letter(letter,(row-1),(col-1));
 		System.out.print("\033[2J");
 		System.out.println(toString());
-		System.out.println( "Current Player: " + playerNumber);
-		System.out.println("");
-		System.out.println("Player 1 Score: " + score1);
-		System.out.println("Player 2 Score: " +score2);
+
+		if (playerNumber==1){
+		    System.out.println( "Current Player: " + playerNumber);
+		    System.out.println("");
+		    System.out.println("Player 1 Score: " + score1);
+		    System.out.println("Player 2 Score: " +score2);
+		}
+		if (compMode){
+		    System.out.println( "Current Player: " + playerType);
+		    System.out.println("");
+		    System.out.println("Player 1 Score: " + score1);
+		    System.out.println("Computer Score: " +score2);
+		}
 		System.out.println("");
 		System.out.println("Previous Word:");
 		System.out.print(lastWord.substring(0, lastWord.length() - 1));
@@ -152,7 +164,7 @@ public class Scrabble {
 	    }
 	}
 
-	if(playerNumber == 2){
+	if(playerNumber == 2 || playerType.equals("Computer")){
 	    int index = player2Letters.indexOf(letter);
 	    if(index == -1){
 		System.out.println("You do not have that letter.");
@@ -165,7 +177,12 @@ public class Scrabble {
 		System.out.println( "Current Player: " + playerNumber);
 		System.out.println("");
 		System.out.println("Player 1 Score: " + score1);
+		if (playerNumber==2){
 		System.out.println("Player 2 Score: " +score2);
+		}
+		else {
+		    System.out.println("Computer Score: " +score2);
+		}
 		System.out.println("");
 		System.out.println("Previous Word:");
 		System.out.print(lastWord.substring(0, lastWord.length() - 1));
@@ -181,8 +198,7 @@ public class Scrabble {
 	newLetters.add(new Letter(letter,row,(col-1)));
 	newLetters.add(new Letter(letter,row,(col+1)));*/
 	
-    }
-
+  }
 
 
     public void horWords(){
@@ -351,6 +367,9 @@ public class Scrabble {
 	String word="";
 	String w="";
 	int count=0;
+	for (int x =0; x < gridLetters.size();x++){
+	    data.add(gridLetters.get(x));
+	}
 	try{
 	    Scanner dict = new Scanner(new File("dictionary.txt"));
 	    while(dict.hasNext()) {
@@ -383,9 +402,11 @@ public class Scrabble {
     }
 
     public void getOldLetters(){
-	for (int x =0; x < newLetters.size();x++){
-	    gridLetters.add((newLetters.get(x)).getVal());
-	}
+	    for (int x =0; x < newLetters.size();x++){
+		gridLetters.add((newLetters.get(x)).getVal());
+	    }
+	
+	    
 	System.out.println(gridLetters.toString());
     }
 
@@ -409,7 +430,7 @@ public class Scrabble {
 	    
 	    //System.out.println(check);
 	    if (check==word.length()){
-		checkWords.add(word);
+		compWords.add(word);
 	    }
 		    
 	}
@@ -436,20 +457,21 @@ public class Scrabble {
 
 
        public boolean addWords(String word, int row, int col){
-	int determinant = randgen.nextInt(2);
-	int deltaX=0;
-	int deltaY=0;
-	// add vertical
-	if (determinant == 0){
-	    deltaX=1;
-	    deltaY=0;
-	}
+ 	int determinant = randgen.nextInt(2);
+ 	int deltaX=0;
+ 	int deltaY=0;
+ 	// add vertical
+ 	if (determinant == 0){
+ 	    deltaX=1;
+ 	    deltaY=0;
+ 	}
+ 	// add horizontal
+ 	if (determinant == 1){
+ 	    deltaX=0;
+ 	    deltaY=1;
+ 	}
 
-	// add horizontal
-	if (determinant == 1){
-	    deltaX=0;
-	    deltaY=1;
-	}
+	
 
 	boolean res = true;
 
@@ -666,65 +688,90 @@ public class Scrabble {
 	boolean nothing=true;
 	int tries=0;
 	String word="";
+	int row =8;
+	int col=8;
+ 	getOldLetters();
+	findWords();
+	checkHelper();
+	sort();
+
+	System.out.println(helper.toString());
+	System.out.println(compWords.toString());
+	System.out.println("hello");
+	System.out.println("data " + data.toString());
+	
 
 	//int indexR = randgen.nextInt(rowsAllowed.size());
 	//int indexC = randgen.nextInt(colsAllowed.size());
+	int index = 0;
 
-	int index = 1;
-	while ((index % 2) == 0){
-	    index = randgen.nextInt(pointsAllowed.size());
+	
+	if (compWords.size()==0){
+	    System.out.println("No words to add!");
+
+	    noWords=true;
+	    tries=5000;
 	}
-	int row= pointsAllowed.get(index);
-	int col= pointsAllowed.get(index+1);
+	
+	
+	while (nothing && count < compWords.size()){
+	
+	
 
 	//row=10;
 	//col=10;
 
-	System.out.println(row);
-	System.out.println(col);
+	System.out.println("row"+row);
+	System.out.println("col"+col);
+	System.out.println(player2Letters.toString());
 
-	findWords();
-	checkHelper();
+
 	//System.out.println(checkWords.toString());
-	checkLast();
-	//System.out.println(compWords.toString());
-	sort();
 
-	if (compWords.size()==0){
-	    System.out.println("No words to add!");
-	    noWords=true;
-	    tries=1000;
-	}
 
-	while (nothing && count<compWords.size()){
-
-	    word=compWords.get(count);
-	    while (nothing && tries<150){
-		//System.out.println(tries);
-		if ( addWords( word, row, col) ){
+	word=compWords.get(count);
+	while (nothing && tries<5){
+	    System.out.println(tries);
+	    index= randgen.nextInt(rowsAllowed.size());
+	    row = rowsAllowed.get(index);
+	    col = colsAllowed.get(index);
+	    if ( addWords( word, row, col) ){
 		    nothing =false;
-		    lastWord= word;
+		    //lastWord= word;
 		    addScore2(word);
-		    Words.add(word);
-		    tries=1000;
-		    newLetters.clear();
-		    pointsAllowed.remove(index);
-		    pointsAllowed.remove(index+1);
+		    WordsAdded.add(word);
+		    tries=5000;
+		    //newLetters.clear();
+		    gridLetters.clear();
+		    for (int i = 0; i < newLetters.size(); i++){
+			rowsAllowed.add( (newLetters.get(i)).getRow());
+			colsAllowed.add ( (newLetters.get(i)).getCol());
+			oldLetters.add(newLetters.get(i));
+		    }
+	
+		    for (int i = newLetters.size() - 1; i > -1; i--){
+			newLetters.remove(i);
+		    }
+		    rowsAllowed.remove(index);
+		    colsAllowed.remove(index);
 
-			for (int x =0; x+1 <= word.length();x++){
-			    player2Letters.remove(word.substring(x,x+1));
-			}
-		}
-		else {tries++;}
+		    for (int x =0; x+1 <= word.length();x++){
+			player2Letters.remove(word.substring(x,x+1));
+			data.remove(word.substring(x,x+1));
+		    }
 	    }
-	    tries=0;
-	    count++;
+	    else {tries++;
+		index= randgen.nextInt(rowsAllowed.size());}
+	}
+	tries=0;
+	count++;
 	}
 	if (nothing && count>= compWords.size()){
 	    noWords=true;
 	    System.out.println("The computer gave up!");
 	}
-
+	System.out.println("rows allowed " + rowsAllowed.toString());
+	System.out.println(" cols allowed "+ colsAllowed.toString());
     }
 
     
@@ -745,11 +792,8 @@ public class Scrabble {
 	//System.out.println(oldLetters.toString());
 	//System.out.println(newLetters.toString());
 	//System.out.println(checkAdjacent());
-	
-	if(checkAllWordsAdded() && checkAdjacent() && (checkNumWords() < 2)){
-
-	    if (compMode){
-		if (playerType.equals("1")){
+	 if (compMode){
+	     if ( playerType.equals("1") && checkAllWordsAdded() && (checkNumWords() < 2) && checkAdjacent() ){
 		    addScore1(wordAdded());
 		    lastWord = wordAdded();
 		    for (int x =0; x < newLetters.size();x++){
@@ -771,8 +815,8 @@ public class Scrabble {
 			    pointsAllowed.add(r);
 			    pointsAllowed.add(c-1);
 			    }*/
-			pointsAllowed.add(r);
-			pointsAllowed.add(c);
+			rowsAllowed.add(r);
+			colsAllowed.add(c);
 		    }
 		    if (score1>=50){
 			System.out.println("Player 1 has won!");
@@ -782,8 +826,9 @@ public class Scrabble {
 		    
 		}
 
-		else{
+	     else{
 		    compInput();
+		    lastWord=wordAdded();
 		    if (score2>=50){
 			System.out.println("Computer has won");
 			System.exit(0);
@@ -791,9 +836,12 @@ public class Scrabble {
 		    
 		    startNewAITurn();
 		}
-	    }
-	    
-	    else{
+	     
+	 }
+	if( checkAllWordsAdded() && checkAdjacent() && (checkNumWords() < 2) ){
+	    System.out.println("im here");
+	   
+	  
 
 		if(playerNumber == 1){
 		    addScore1(wordAdded());
@@ -814,7 +862,6 @@ public class Scrabble {
 
 	    
 		startNewTurn();
-	    }
 	}
 
 	    
@@ -994,6 +1041,8 @@ public class Scrabble {
 
 
     public void startNewAITurn(){
+
+	
 	if(turnNumber % 2 == 1){
 	    playerType = "Computer";}
 	else{playerType = "1";}
@@ -1012,7 +1061,7 @@ public class Scrabble {
 	    System.out.println("The computer could not add any words!");
 	}
 	else{
-	    System.out.print(wordAdded().substring(0, wordAdded().length() - 1));
+	    System.out.print(wordAdded().substring(0, wordAdded().length()));
 	}
 	System.out.println(" " + genScore(wordAdded()));
 	System.out.println("");
@@ -1024,6 +1073,12 @@ public class Scrabble {
 		oldGrid[row][col] = grid[row][col];
 	    }
 	}
+		           	
+	Words.add(wordAdded());
+	clearWordsAdded();
+	clearWords();
+	horWords();
+	verWords();
 	
 	if(playerType.equals("1")){
 	    for(int i = oldLetters1.size() - 1; i > -1; i--){
@@ -1035,8 +1090,13 @@ public class Scrabble {
 	    for(int i = 0; i < player1Letters.size(); i++){
 		oldLetters1.add(player1Letters.get(i));
 	    }
+	    System.out.println("PLEASE ENTER A LETTER FOLLOWED BY THE X-COORDINATE AND Y-COORDINATE: FORMMATED LIKE THIS- A 1 1");	    
+	    userInput();
+	    System.out.println("hi");
 	    
 	}
+
+
 
 
 	else{ //playerNumber2 is the computer
@@ -1044,12 +1104,6 @@ public class Scrabble {
 
 	    distributeLetters2();
 	    
-           	
-	    Words.add(wordAdded());
-	    clearWordsAdded();
-	    clearWords();
-	    horWords();
-	    verWords();
 	    endTurn();
 	    
 
@@ -1079,6 +1133,13 @@ public class Scrabble {
 
     
     public void userInput(){
+	System.out.println("user input");
+	System.out.println(checkAllWordsAdded());
+	System.out.println(checkAdjacent());
+	System.out.println(checkNumWords() < 2);
+	System.out.println( "verdict " +  (checkAllWordsAdded() && checkAdjacent() && (checkNumWords() < 2)) );
+	System.out.println(newLetters.toString());
+	System.out.println(oldLetters.toString());
 
 	while(scan.hasNext()){
 	    String letter = scan.next();
@@ -1094,6 +1155,7 @@ public class Scrabble {
 
 		addLetter(letter, col, row);
 		start=false;
+		System.out.println("hello");
 	    }
 	}
 
