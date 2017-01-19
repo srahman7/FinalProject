@@ -407,7 +407,7 @@ public class Scrabble {
 	    }
 	
 	    
-	System.out.println(gridLetters.toString());
+	    //System.out.println(gridLetters.toString());
     }
 
     public void checkHelper(){
@@ -695,10 +695,10 @@ public class Scrabble {
 	checkHelper();
 	sort();
 
-	System.out.println(helper.toString());
-	System.out.println(compWords.toString());
-	System.out.println("hello");
-	System.out.println("data " + data.toString());
+	//System.out.println(helper.toString());
+	//System.out.println(compWords.toString());
+	//System.out.println("hello");
+	//System.out.println("data " + data.toString());
 	
 
 	//int indexR = randgen.nextInt(rowsAllowed.size());
@@ -721,9 +721,9 @@ public class Scrabble {
 	//row=10;
 	//col=10;
 
-	System.out.println("row"+row);
+	/*System.out.println("row"+row);
 	System.out.println("col"+col);
-	System.out.println(player2Letters.toString());
+	System.out.println(player2Letters.toString());*/
 
 
 	//System.out.println(checkWords.toString());
@@ -770,8 +770,8 @@ public class Scrabble {
 	    noWords=true;
 	    System.out.println("The computer gave up!");
 	}
-	System.out.println("rows allowed " + rowsAllowed.toString());
-	System.out.println(" cols allowed "+ colsAllowed.toString());
+	//System.out.println("rows allowed " + rowsAllowed.toString());
+	//System.out.println(" cols allowed "+ colsAllowed.toString());
     }
 
     
@@ -839,7 +839,7 @@ public class Scrabble {
 	     
 	 }
 	if( checkAllWordsAdded() && checkAdjacent() && (checkNumWords() < 2) ){
-	    System.out.println("im here");
+	    // System.out.println("im here");
 	   
 	  
 
@@ -1092,7 +1092,7 @@ public class Scrabble {
 	    }
 	    System.out.println("PLEASE ENTER A LETTER FOLLOWED BY THE X-COORDINATE AND Y-COORDINATE: FORMMATED LIKE THIS- A 1 1");	    
 	    userInput();
-	    System.out.println("hi");
+	    //System.out.println("hi");
 	    
 	}
 
@@ -1133,13 +1133,13 @@ public class Scrabble {
 
     
     public void userInput(){
-	System.out.println("user input");
-	System.out.println(checkAllWordsAdded());
+	//System.out.println("user input");
+	/*System.out.println(checkAllWordsAdded());
 	System.out.println(checkAdjacent());
 	System.out.println(checkNumWords() < 2);
 	System.out.println( "verdict " +  (checkAllWordsAdded() && checkAdjacent() && (checkNumWords() < 2)) );
 	System.out.println(newLetters.toString());
-	System.out.println(oldLetters.toString());
+	System.out.println(oldLetters.toString());*/
 
 	while(scan.hasNext()){
 	    String letter = scan.next();
