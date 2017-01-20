@@ -1,6 +1,8 @@
 # FinalProject
 This is our bomb final project..its mad finesse
 
+**We made a new branch named IMPROVEMENTS for debugging after the final demo
+
 
 Brief Description:
 HELLO this is the final project of RahmanNoodLees!!
